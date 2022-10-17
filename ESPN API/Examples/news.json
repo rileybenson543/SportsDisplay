@@ -1,0 +1,935 @@
+{
+  "header": "NFL News",
+  "link": {
+    "language": "en",
+    "rel": ["index", "desktop", "league"],
+    "href": "https://www.espn.com/nfl/",
+    "text": "All NFL News",
+    "shortText": "All News",
+    "isExternal": false,
+    "isPremium": false
+  },
+  "articles": [
+    {
+      "images": [
+        {
+          "name": "Deshaun Watson facing new lawsuit stemming from alleged 2020 incident",
+          "width": 576,
+          "alt": "",
+          "caption": "Anissah Nguyen, the attorney representing the plantiff in the new lawsuit against Deshaun Watson, details the allegations against Watson from a massage session in 2020.",
+          "url": "https://a.espncdn.com/media/motion/2022/1014/dm_221014_nfl_otl_watson_segment/dm_221014_nfl_otl_watson_segment.jpg",
+          "height": 324
+        }
+      ],
+      "description": "Anissah Nguyen, the attorney representing the plantiff in the new lawsuit against Deshaun Watson, details the allegations against Watson from a massage session in 2020.",
+      "published": "2022-10-14T18:52:15Z",
+      "type": "Media",
+      "premium": false,
+      "links": {
+        "api": {
+          "news": { "href": "http://api-app.espn.com/v1/video/clips/34795717" },
+          "self": { "href": "http://api-app.espn.com/v1/video/clips/34795717" }
+        },
+        "web": {
+          "href": "https://www.espn.com/video/clip?id=34795717",
+          "short": { "href": "https://es.pn/3S0Wfbt" }
+        }
+      },
+      "lastModified": "2022-10-14T18:51:51Z",
+      "categories": [
+        {
+          "id": 9572,
+          "description": "NFL",
+          "type": "league",
+          "sportId": 28,
+          "leagueId": 28,
+          "league": {
+            "id": 28,
+            "description": "NFL",
+            "links": {
+              "api": {
+                "leagues": {
+                  "href": "http://now.core.api.espn.com/v1/sports/football/nfl"
+                }
+              },
+              "web": { "leagues": { "href": "https://www.espn.com/nfl/" } },
+              "mobile": { "leagues": { "href": "http://m.espn.com/nfl/" } }
+            }
+          },
+          "uid": "s:20~l:28",
+          "createDate": "2022-10-14T18:49:54Z"
+        },
+        {
+          "id": 166843,
+          "description": "Deshaun Watson",
+          "type": "athlete",
+          "sportId": 28,
+          "athleteId": 3122840,
+          "athlete": {
+            "id": 3122840,
+            "description": "Deshaun Watson",
+            "links": {
+              "api": {
+                "athletes": {
+                  "href": "http://now.core.api.espn.com/v1/sports/football/nfl/athletes/3122840"
+                }
+              },
+              "web": {
+                "athletes": {
+                  "href": "https://www.espn.com/nfl/player/_/id/3122840/deshaun-watson"
+                }
+              },
+              "mobile": {
+                "athletes": {
+                  "href": "http://m.espn.com/nfl/playercard?playerId=3122840"
+                }
+              }
+            }
+          },
+          "uid": "s:20~l:28~a:3122840",
+          "createDate": "2022-10-14T18:49:54Z"
+        },
+        {
+          "id": 2719,
+          "description": "Cleveland Browns",
+          "type": "team",
+          "sportId": 28,
+          "teamId": 5,
+          "team": {
+            "id": 5,
+            "description": "Cleveland Browns",
+            "links": {
+              "api": {
+                "teams": {
+                  "href": "http://now.core.api.espn.com/v1/sports/football/nfl/teams/5"
+                }
+              },
+              "web": {
+                "teams": {
+                  "href": "https://www.espn.com/nfl/team/_/name/cle/cleveland-browns"
+                }
+              },
+              "mobile": {
+                "teams": { "href": "http://m.espn.com/nfl/clubhouse?teamId=5" }
+              }
+            }
+          },
+          "uid": "s:20~l:28~t:5",
+          "createDate": "2022-10-14T18:49:54Z"
+        },
+        {
+          "type": "guid",
+          "guid": "b6ec8e9e3d85a1de9d0a5a51621a9c20",
+          "createDate": "2022-10-14T18:49:54Z"
+        },
+        {
+          "type": "guid",
+          "guid": "539babc5e5fb753b8ae1c15032a91ef4",
+          "createDate": "2022-10-14T18:49:54Z"
+        },
+        {
+          "type": "guid",
+          "guid": "ad4c3bd2-ddb6-3f8c-8abf-744855a08fa4",
+          "createDate": "2022-10-14T18:49:54Z"
+        }
+      ],
+      "headline": "Deshaun Watson facing new lawsuit stemming from alleged 2020 incident"
+    },
+    {
+      "images": [
+        {
+          "name": "Jadeveon Clowney (June 16, 2022) [600x400]",
+          "width": 600,
+          "id": 34103076,
+          "credit": "AP Photo/Ron Schwane",
+          "type": "header",
+          "url": "https://a.espncdn.com/photo/2022/0616/r1025969_600x400_3-2.jpg",
+          "height": 400
+        }
+      ],
+      "description": "The Browns will be without cornerback Denzel Ward and defensive end Jadeveon Clowney against the Patriots.",
+      "published": "2022-10-14T17:11:20Z",
+      "type": "HeadlineNews",
+      "premium": false,
+      "links": {
+        "api": {
+          "news": {
+            "href": "http://now.core.api.espn.com/v1/sports/news/34795436"
+          },
+          "self": {
+            "href": "http://now.core.api.espn.com/v1/sports/news/34795436"
+          }
+        },
+        "web": {
+          "href": "https://www.espn.com/nfl/story/_/id/34795436/browns-rule-denzel-ward-jadeveon-clowney-patriots",
+          "short": { "href": "https://es.pn/3Taan3S" }
+        },
+        "mobile": { "href": "http://m.espn.go.com/nfl/story?storyId=34795436" }
+      },
+      "lastModified": "2022-10-14T17:11:19Z",
+      "categories": [
+        {
+          "id": 2719,
+          "description": "Cleveland Browns",
+          "type": "team",
+          "sportId": 28,
+          "teamId": 5,
+          "team": {
+            "id": 5,
+            "description": "Cleveland Browns",
+            "links": {
+              "api": {
+                "teams": {
+                  "href": "http://now.core.api.espn.com/v1/sports/football/nfl/teams/5"
+                }
+              },
+              "web": {
+                "teams": {
+                  "href": "https://www.espn.com/nfl/team/_/name/cle/cleveland-browns"
+                }
+              },
+              "mobile": {
+                "teams": { "href": "http://m.espn.com/nfl/clubhouse?teamId=5" }
+              }
+            }
+          },
+          "uid": "s:20~l:28~t:5",
+          "createDate": "2022-10-14T16:56:00Z"
+        },
+        {
+          "id": 9572,
+          "description": "NFL",
+          "type": "league",
+          "sportId": 28,
+          "leagueId": 28,
+          "league": {
+            "id": 28,
+            "description": "NFL",
+            "links": {
+              "api": {
+                "leagues": {
+                  "href": "http://now.core.api.espn.com/v1/sports/football/nfl"
+                }
+              },
+              "web": { "leagues": { "href": "https://www.espn.com/nfl/" } },
+              "mobile": { "leagues": { "href": "http://m.espn.com/nfl/" } }
+            }
+          },
+          "uid": "s:20~l:28",
+          "createDate": "2022-10-14T16:56:00Z"
+        },
+        {
+          "id": 184500,
+          "description": "Denzel Ward",
+          "type": "athlete",
+          "sportId": 28,
+          "athleteId": 3915535,
+          "athlete": {
+            "id": 3915535,
+            "description": "Denzel Ward",
+            "links": {
+              "api": {
+                "athletes": {
+                  "href": "http://now.core.api.espn.com/v1/sports/football/nfl/athletes/3915535"
+                }
+              },
+              "web": {
+                "athletes": {
+                  "href": "https://www.espn.com/nfl/player/_/id/3915535/denzel-ward"
+                }
+              },
+              "mobile": {
+                "athletes": {
+                  "href": "http://m.espn.com/nfl/playercard?playerId=3915535"
+                }
+              }
+            }
+          },
+          "uid": "s:20~l:28~a:3915535",
+          "createDate": "2022-10-14T16:56:00Z"
+        },
+        {
+          "id": 126374,
+          "description": "Jadeveon Clowney",
+          "type": "athlete",
+          "sportId": 28,
+          "athleteId": 16734,
+          "athlete": {
+            "id": 16734,
+            "description": "Jadeveon Clowney",
+            "links": {
+              "api": {
+                "athletes": {
+                  "href": "http://now.core.api.espn.com/v1/sports/football/nfl/athletes/16734"
+                }
+              },
+              "web": {
+                "athletes": {
+                  "href": "https://www.espn.com/nfl/player/_/id/16734/jadeveon-clowney"
+                }
+              },
+              "mobile": {
+                "athletes": {
+                  "href": "http://m.espn.com/nfl/playercard?playerId=16734"
+                }
+              }
+            }
+          },
+          "uid": "s:20~l:28~a:16734",
+          "createDate": "2022-10-14T16:56:00Z"
+        },
+        {
+          "id": 409224,
+          "description": "news",
+          "type": "topic",
+          "sportId": 0,
+          "topicId": 781,
+          "createDate": "2022-10-14T16:56:00Z"
+        },
+        {
+          "topicId": 121,
+          "type": "topic",
+          "sportId": 0,
+          "uid": "s:0",
+          "createDate": "2022-10-14T17:04:10Z"
+        },
+        {
+          "type": "guid",
+          "guid": "ad4c3bd2-ddb6-3f8c-8abf-744855a08fa4",
+          "createDate": "2022-10-14T16:56:00Z"
+        },
+        {
+          "type": "guid",
+          "guid": "539babc5e5fb753b8ae1c15032a91ef4",
+          "createDate": "2022-10-14T16:56:00Z"
+        },
+        {
+          "type": "guid",
+          "guid": "83ac33664399764944a12a77437351a6",
+          "createDate": "2022-10-14T16:56:00Z"
+        },
+        {
+          "type": "guid",
+          "guid": "5231367719f8b106ec91d8d17e6087fe",
+          "createDate": "2022-10-14T16:56:00Z"
+        },
+        {
+          "type": "guid",
+          "guid": "ffd795dddc60d4c3f868831dc2ec21b3",
+          "createDate": "2022-10-14T17:04:10Z"
+        },
+        {
+          "type": "guid",
+          "guid": "95f2a31ddb2e076eb5a926005a9bdfd6",
+          "createDate": "2022-10-14T16:56:00Z"
+        }
+      ],
+      "headline": "Browns rule out Denzel Ward, Jadeveon Clowney against Patriots",
+      "byline": "Jake Trotter"
+    },
+    {
+      "images": [
+        {
+          "name": "Grady Jarrett and Tom Brady [600x400]",
+          "width": 600,
+          "alt": "Grady Jarrett and Tom Brady",
+          "caption": "Falcons defensive tackle Grady Jarrett was penalized for roughing the passes after sacking Bucs quarterback Tom Brady on Sunday.",
+          "id": 34776197,
+          "credit": "Julio Aguilar/Getty Images",
+          "type": "header",
+          "url": "https://a.espncdn.com/photo/2022/1011/r1074232_600x400_3-2.jpg",
+          "height": 400
+        },
+        {
+          "name": "Falcons coach in disbelief after Jarrett flagged for roughing the passer against Brady",
+          "width": 576,
+          "caption": "Grady Jarrett is penalized for a questionable roughing the passer call on Tom Brady with three minutes to play.",
+          "type": "Media",
+          "url": "https://a.espncdn.com/media/motion/2022/1009/dm_221009_nfl_blank1002/dm_221009_nfl_blank1002.jpg",
+          "height": 324
+        }
+      ],
+      "description": "Tampa Bay Buccaneers quarterback Tom Brady has been fined $11,139 for attempting to kick Atlanta Falcons defensive end Grady Jarrett on a sack in the Bucs' 21-15 victory over the Falcons last week, sources told ESPN's Adam Schefter.",
+      "published": "2022-10-14T18:01:18Z",
+      "type": "HeadlineNews",
+      "premium": false,
+      "links": {
+        "api": {
+          "news": {
+            "href": "http://now.core.api.espn.com/v1/sports/news/34795411"
+          },
+          "self": {
+            "href": "http://now.core.api.espn.com/v1/sports/news/34795411"
+          }
+        },
+        "web": {
+          "href": "https://www.espn.com/nfl/story/_/id/34795411/source-nfl-fines-tampa-bay-tom-brady-11k-kick",
+          "short": { "href": "https://es.pn/3euPLnE" }
+        },
+        "mobile": { "href": "http://m.espn.go.com/nfl/story?storyId=34795411" }
+      },
+      "lastModified": "2022-10-14T18:01:16Z",
+      "categories": [
+        {
+          "id": 409224,
+          "description": "news",
+          "type": "topic",
+          "sportId": 0,
+          "topicId": 781,
+          "createDate": "2022-10-14T16:49:00Z"
+        },
+        {
+          "id": 9572,
+          "description": "NFL",
+          "type": "league",
+          "sportId": 28,
+          "leagueId": 28,
+          "league": {
+            "id": 28,
+            "description": "NFL",
+            "links": {
+              "api": {
+                "leagues": {
+                  "href": "http://now.core.api.espn.com/v1/sports/football/nfl"
+                }
+              },
+              "web": { "leagues": { "href": "https://www.espn.com/nfl/" } },
+              "mobile": { "leagues": { "href": "http://m.espn.com/nfl/" } }
+            }
+          },
+          "uid": "s:20~l:28",
+          "createDate": "2022-10-14T16:49:00Z"
+        },
+        {
+          "id": 2091,
+          "description": "Tampa Bay Buccaneers",
+          "type": "team",
+          "sportId": 28,
+          "teamId": 27,
+          "team": {
+            "id": 27,
+            "description": "Tampa Bay Buccaneers",
+            "links": {
+              "api": {
+                "teams": {
+                  "href": "http://now.core.api.espn.com/v1/sports/football/nfl/teams/27"
+                }
+              },
+              "web": {
+                "teams": {
+                  "href": "https://www.espn.com/nfl/team/_/name/tb/tampa-bay-buccaneers"
+                }
+              },
+              "mobile": {
+                "teams": { "href": "http://m.espn.com/nfl/clubhouse?teamId=27" }
+              }
+            }
+          },
+          "uid": "s:20~l:28~t:27",
+          "createDate": "2022-10-14T16:49:00Z"
+        },
+        {
+          "id": 2360,
+          "description": "Tom Brady",
+          "type": "athlete",
+          "sportId": 28,
+          "athleteId": 2330,
+          "athlete": {
+            "id": 2330,
+            "description": "Tom Brady",
+            "links": {
+              "api": {
+                "athletes": {
+                  "href": "http://now.core.api.espn.com/v1/sports/football/nfl/athletes/2330"
+                }
+              },
+              "web": {
+                "athletes": {
+                  "href": "https://www.espn.com/nfl/player/_/id/2330/tom-brady"
+                }
+              },
+              "mobile": {
+                "athletes": {
+                  "href": "http://m.espn.com/nfl/playercard?playerId=2330"
+                }
+              }
+            }
+          },
+          "uid": "s:20~l:28~a:2330",
+          "createDate": "2022-10-14T16:49:00Z"
+        },
+        {
+          "id": 139123,
+          "description": "Grady Jarrett",
+          "type": "athlete",
+          "sportId": 28,
+          "athleteId": 2576492,
+          "athlete": {
+            "id": 2576492,
+            "description": "Grady Jarrett",
+            "links": {
+              "api": {
+                "athletes": {
+                  "href": "http://now.core.api.espn.com/v1/sports/football/nfl/athletes/2576492"
+                }
+              },
+              "web": {
+                "athletes": {
+                  "href": "https://www.espn.com/nfl/player/_/id/2576492/grady-jarrett"
+                }
+              },
+              "mobile": {
+                "athletes": {
+                  "href": "http://m.espn.com/nfl/playercard?playerId=2576492"
+                }
+              }
+            }
+          },
+          "uid": "s:20~l:28~a:2576492",
+          "createDate": "2022-10-14T16:49:00Z"
+        },
+        {
+          "id": 1979,
+          "description": "Atlanta Falcons",
+          "type": "team",
+          "sportId": 28,
+          "teamId": 1,
+          "team": {
+            "id": 1,
+            "description": "Atlanta Falcons",
+            "links": {
+              "api": {
+                "teams": {
+                  "href": "http://now.core.api.espn.com/v1/sports/football/nfl/teams/1"
+                }
+              },
+              "web": {
+                "teams": {
+                  "href": "https://www.espn.com/nfl/team/_/name/atl/atlanta-falcons"
+                }
+              },
+              "mobile": {
+                "teams": { "href": "http://m.espn.com/nfl/clubhouse?teamId=1" }
+              }
+            }
+          },
+          "uid": "s:20~l:28~t:1",
+          "createDate": "2022-10-14T16:49:00Z"
+        },
+        {
+          "topicId": 92,
+          "type": "topic",
+          "sportId": 0,
+          "uid": "s:0",
+          "createDate": "2022-10-14T16:57:09Z"
+        },
+        {
+          "topicId": 121,
+          "type": "topic",
+          "sportId": 0,
+          "uid": "s:0",
+          "createDate": "2022-10-14T16:57:10Z"
+        },
+        { "topicId": 155, "type": "topic", "sportId": 0, "uid": "s:0" },
+        { "topicId": 384, "type": "topic", "sportId": 0, "uid": "s:0" },
+        { "topicId": 547, "type": "topic", "sportId": 0, "uid": "s:0" },
+        { "topicId": 553, "type": "topic", "sportId": 0, "uid": "s:0" },
+        {
+          "type": "guid",
+          "guid": "ad4c3bd2-ddb6-3f8c-8abf-744855a08fa4",
+          "createDate": "2022-10-14T16:49:00Z"
+        },
+        {
+          "type": "guid",
+          "guid": "49fd392a86fe4df31b779bbfa18b2ad5",
+          "createDate": "2022-10-14T16:49:00Z"
+        },
+        {
+          "type": "guid",
+          "guid": "13e8b157a75aff24ae91fa3d52ddf204",
+          "createDate": "2022-10-14T16:49:00Z"
+        },
+        {
+          "type": "guid",
+          "guid": "be3c0e305a1e8174091da41bf4e2d51e",
+          "createDate": "2022-10-14T16:49:00Z"
+        },
+        {
+          "type": "guid",
+          "guid": "944cb5469bc0653293be6ba6b4ae7e8a",
+          "createDate": "2022-10-14T16:49:00Z"
+        },
+        {
+          "type": "guid",
+          "guid": "5231367719f8b106ec91d8d17e6087fe",
+          "createDate": "2022-10-14T16:49:00Z"
+        },
+        {
+          "type": "guid",
+          "guid": "cf7d85805e4d5fc2487711791f7c3a90",
+          "createDate": "2022-10-14T16:57:09Z"
+        },
+        {
+          "type": "guid",
+          "guid": "ffd795dddc60d4c3f868831dc2ec21b3",
+          "createDate": "2022-10-14T16:57:10Z"
+        }
+      ],
+      "headline": "Source: NFL fines Tampa Bay's Tom Brady $11K for kick",
+      "byline": "Jenna Laine"
+    },
+    {
+      "images": [
+        {
+          "name": "Stephen A. gets a surprise birthday message",
+          "width": 576,
+          "alt": "",
+          "caption": "Stephen A. Smith is surprised with a special birthday message from Cowboys owner Jerry Jones.",
+          "url": "https://a.espncdn.com/media/motion/2022/1014/dm_221014_nfl_first_take_stephen_a_birthday_message/dm_221014_nfl_first_take_stephen_a_birthday_message.jpg",
+          "height": 324
+        }
+      ],
+      "description": "Stephen A. Smith is surprised with a special birthday message from Cowboys owner Jerry Jones.",
+      "published": "2022-10-14T16:19:53Z",
+      "type": "Media",
+      "premium": false,
+      "links": {
+        "api": {
+          "news": { "href": "http://api-app.espn.com/v1/video/clips/34795259" },
+          "self": { "href": "http://api-app.espn.com/v1/video/clips/34795259" }
+        },
+        "web": {
+          "href": "https://www.espn.com/video/clip?id=34795259",
+          "short": { "href": "https://es.pn/3yGNJHS" }
+        }
+      },
+      "lastModified": "2022-10-14T16:19:33Z",
+      "categories": [
+        {
+          "id": 9572,
+          "description": "NFL",
+          "type": "league",
+          "sportId": 28,
+          "leagueId": 28,
+          "league": {
+            "id": 28,
+            "description": "NFL",
+            "links": {
+              "api": {
+                "leagues": {
+                  "href": "http://now.core.api.espn.com/v1/sports/football/nfl"
+                }
+              },
+              "web": { "leagues": { "href": "https://www.espn.com/nfl/" } },
+              "mobile": { "leagues": { "href": "http://m.espn.com/nfl/" } }
+            }
+          },
+          "uid": "s:20~l:28",
+          "createDate": "2022-10-14T16:18:38Z"
+        },
+        {
+          "type": "guid",
+          "guid": "ad4c3bd2-ddb6-3f8c-8abf-744855a08fa4",
+          "createDate": "2022-10-14T16:18:38Z"
+        }
+      ],
+      "headline": "Stephen A. gets a surprise birthday message"
+    },
+    {
+      "images": [
+        {
+          "name": "Baker Mayfield, Carolina Panthers, 2022, NFL [600x400]",
+          "width": 600,
+          "alt": "Baker Mayfield, Carolina Panthers, 2022, NFL",
+          "caption": "Baker Mayfield is completing just 54.7% of his passes with four touchdowns and three picks.",
+          "id": 34717198,
+          "credit": "Photo by Jared C. Tilton/Getty Images",
+          "type": "header",
+          "url": "https://a.espncdn.com/photo/2022/1003/r1070371_600x400_3-2.jpg",
+          "height": 400
+        }
+      ],
+      "description": "Baker Mayfield was out of his walking boot on Friday and \"definitely could be the backup\" to PJ Walker on Sunday when the Panthers play the Rams, interim coach Steve Wilks said.",
+      "published": "2022-10-14T17:28:27Z",
+      "type": "HeadlineNews",
+      "premium": false,
+      "links": {
+        "api": {
+          "news": {
+            "href": "http://now.core.api.espn.com/v1/sports/news/34795234"
+          },
+          "self": {
+            "href": "http://now.core.api.espn.com/v1/sports/news/34795234"
+          }
+        },
+        "web": {
+          "href": "https://www.espn.com/nfl/story/_/id/34795234/steve-wilks-baker-mayfield-definitely-backup-pj-walker-sunday",
+          "short": { "href": "https://es.pn/3ex1ylr" }
+        },
+        "mobile": { "href": "http://m.espn.go.com/nfl/story?storyId=34795234" }
+      },
+      "lastModified": "2022-10-14T17:28:18Z",
+      "categories": [
+        {
+          "id": 9572,
+          "description": "NFL",
+          "type": "league",
+          "sportId": 28,
+          "leagueId": 28,
+          "league": {
+            "id": 28,
+            "description": "NFL",
+            "links": {
+              "api": {
+                "leagues": {
+                  "href": "http://now.core.api.espn.com/v1/sports/football/nfl"
+                }
+              },
+              "web": { "leagues": { "href": "https://www.espn.com/nfl/" } },
+              "mobile": { "leagues": { "href": "http://m.espn.com/nfl/" } }
+            }
+          },
+          "uid": "s:20~l:28",
+          "createDate": "2022-10-14T16:17:00Z"
+        },
+        {
+          "id": 2146,
+          "description": "Carolina Panthers",
+          "type": "team",
+          "sportId": 28,
+          "teamId": 29,
+          "team": {
+            "id": 29,
+            "description": "Carolina Panthers",
+            "links": {
+              "api": {
+                "teams": {
+                  "href": "http://now.core.api.espn.com/v1/sports/football/nfl/teams/29"
+                }
+              },
+              "web": {
+                "teams": {
+                  "href": "https://www.espn.com/nfl/team/_/name/car/carolina-panthers"
+                }
+              },
+              "mobile": {
+                "teams": { "href": "http://m.espn.com/nfl/clubhouse?teamId=29" }
+              }
+            }
+          },
+          "uid": "s:20~l:28~t:29",
+          "createDate": "2022-10-14T16:17:00Z"
+        },
+        {
+          "id": 184532,
+          "description": "Baker Mayfield",
+          "type": "athlete",
+          "sportId": 28,
+          "athleteId": 3052587,
+          "athlete": {
+            "id": 3052587,
+            "description": "Baker Mayfield",
+            "links": {
+              "api": {
+                "athletes": {
+                  "href": "http://now.core.api.espn.com/v1/sports/football/nfl/athletes/3052587"
+                }
+              },
+              "web": {
+                "athletes": {
+                  "href": "https://www.espn.com/nfl/player/_/id/3052587/baker-mayfield"
+                }
+              },
+              "mobile": {
+                "athletes": {
+                  "href": "http://m.espn.com/nfl/playercard?playerId=3052587"
+                }
+              }
+            }
+          },
+          "uid": "s:20~l:28~a:3052587",
+          "createDate": "2022-10-14T16:17:00Z"
+        },
+        {
+          "id": 409224,
+          "description": "news",
+          "type": "topic",
+          "sportId": 0,
+          "topicId": 781,
+          "createDate": "2022-10-14T16:17:00Z"
+        },
+        {
+          "topicId": 121,
+          "type": "topic",
+          "sportId": 0,
+          "uid": "s:0",
+          "createDate": "2022-10-14T16:25:09Z"
+        },
+        {
+          "topicId": 401,
+          "type": "topic",
+          "sportId": 0,
+          "uid": "s:0",
+          "createDate": "2022-10-14T16:26:16Z"
+        },
+        {
+          "type": "guid",
+          "guid": "5bb4376ad089e3e4e49a44f1d709a012",
+          "createDate": "2022-10-14T16:17:00Z"
+        },
+        {
+          "type": "guid",
+          "guid": "5231367719f8b106ec91d8d17e6087fe",
+          "createDate": "2022-10-14T16:17:00Z"
+        },
+        {
+          "type": "guid",
+          "guid": "ffd795dddc60d4c3f868831dc2ec21b3",
+          "createDate": "2022-10-14T16:25:09Z"
+        },
+        {
+          "type": "guid",
+          "guid": "dfe9791082fd48e0fe7912aaa66fd4f2",
+          "createDate": "2022-10-14T16:26:16Z"
+        },
+        {
+          "type": "guid",
+          "guid": "647c27bfab86550e5b8391c29e73e4a9",
+          "createDate": "2022-10-14T16:17:00Z"
+        },
+        {
+          "type": "guid",
+          "guid": "ad4c3bd2-ddb6-3f8c-8abf-744855a08fa4",
+          "createDate": "2022-10-14T16:17:00Z"
+        }
+      ],
+      "headline": "Steve Wilks: Baker Mayfield 'definitely could' be backup QB Sunday",
+      "byline": "David Newton"
+    },
+    {
+      "images": [
+        {
+          "name": "Justin Fields frustrated with Bears being 'almost there' after loss",
+          "width": 576,
+          "alt": "",
+          "caption": "Bears QB Justin Fields shares his frustration with being \"almost there\" after a close loss to the Commanders on Thursday night.",
+          "url": "https://a.espncdn.com/media/motion/2022/1014/dm_221014_nfl_fields_presser_after_loss_to_commanders/dm_221014_nfl_fields_presser_after_loss_to_commanders.jpg",
+          "height": 324
+        }
+      ],
+      "description": "Bears QB Justin Fields shares his frustration with being \"almost there\" after a close loss to the Commanders on Thursday night.",
+      "published": "2022-10-14T15:52:43Z",
+      "type": "Media",
+      "premium": false,
+      "links": {
+        "api": {
+          "news": { "href": "http://api-app.espn.com/v1/video/clips/34795045" },
+          "self": { "href": "http://api-app.espn.com/v1/video/clips/34795045" }
+        },
+        "web": {
+          "href": "https://www.espn.com/video/clip?id=34795045",
+          "short": { "href": "https://es.pn/3CYNUks" }
+        }
+      },
+      "lastModified": "2022-10-14T15:52:30Z",
+      "categories": [
+        {
+          "id": 9572,
+          "description": "NFL",
+          "type": "league",
+          "sportId": 28,
+          "leagueId": 28,
+          "league": {
+            "id": 28,
+            "description": "NFL",
+            "links": {
+              "api": {
+                "leagues": {
+                  "href": "http://now.core.api.espn.com/v1/sports/football/nfl"
+                }
+              },
+              "web": { "leagues": { "href": "https://www.espn.com/nfl/" } },
+              "mobile": { "leagues": { "href": "http://m.espn.com/nfl/" } }
+            }
+          },
+          "uid": "s:20~l:28",
+          "createDate": "2022-10-14T15:48:15Z"
+        },
+        {
+          "id": 1750,
+          "description": "Chicago Bears",
+          "type": "team",
+          "sportId": 28,
+          "teamId": 3,
+          "team": {
+            "id": 3,
+            "description": "Chicago Bears",
+            "links": {
+              "api": {
+                "teams": {
+                  "href": "http://now.core.api.espn.com/v1/sports/football/nfl/teams/3"
+                }
+              },
+              "web": {
+                "teams": {
+                  "href": "https://www.espn.com/nfl/team/_/name/chi/chicago-bears"
+                }
+              },
+              "mobile": {
+                "teams": { "href": "http://m.espn.com/nfl/clubhouse?teamId=3" }
+              }
+            }
+          },
+          "uid": "s:20~l:28~t:3",
+          "createDate": "2022-10-14T15:48:15Z"
+        },
+        {
+          "id": 470092,
+          "description": "Justin Fields",
+          "type": "athlete",
+          "sportId": 28,
+          "athleteId": 4362887,
+          "athlete": {
+            "id": 4362887,
+            "description": "Justin Fields",
+            "links": {
+              "api": {
+                "athletes": {
+                  "href": "http://now.core.api.espn.com/v1/sports/football/nfl/athletes/4362887"
+                }
+              },
+              "web": {
+                "athletes": {
+                  "href": "https://www.espn.com/nfl/player/_/id/4362887/justin-fields"
+                }
+              },
+              "mobile": {
+                "athletes": {
+                  "href": "http://m.espn.com/nfl/playercard?playerId=4362887"
+                }
+              }
+            }
+          },
+          "uid": "s:20~l:28~a:4362887",
+          "createDate": "2022-10-14T15:48:15Z"
+        },
+        {
+          "type": "guid",
+          "guid": "19d73366b5a5cca2a176a2c024ce0bb3",
+          "createDate": "2022-10-14T15:48:15Z"
+        },
+        {
+          "type": "guid",
+          "guid": "7e9fbd60951e2d9a8d8cb3f1ab6c4a4d",
+          "createDate": "2022-10-14T15:48:15Z"
+        },
+        {
+          "type": "guid",
+          "guid": "ad4c3bd2-ddb6-3f8c-8abf-744855a08fa4",
+          "createDate": "2022-10-14T15:48:15Z"
+        }
+      ],
+      "headline": "Justin Fields frustrated with Bears being 'almost there' after loss"
+    }
+  ]
+}
