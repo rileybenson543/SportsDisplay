@@ -3,4 +3,4 @@
 using std::string;
 
 
-int processImage(string inputfilePath, int newsize);
+int processImage(string* url, string* filename, int newsize_px);

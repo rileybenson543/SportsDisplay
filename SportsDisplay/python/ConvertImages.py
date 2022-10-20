@@ -1,4 +1,5 @@
 import os
+from os import mkdir
 from PIL import Image
 import sys
 

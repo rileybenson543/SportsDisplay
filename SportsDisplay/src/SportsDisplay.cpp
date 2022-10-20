@@ -12,11 +12,11 @@ int main(void)
 {
 	//std::cout << getRequest(RequestType::NEWS) << std::endl;
 	//time_t prev = time(nullptr);
-	//getRequest(RequestType::TEAMS);
-	std::cout << "Successfully downloaded and parsed team data" << "\n";
 	//time_t now = time(nullptr);
 	//if (now - prev > 1) {
 		while (true) {
+			getRequest(RequestType::TEAMS);
+			std::cout << "Successfully downloaded and parsed team data" << "\n";
 			auto start = std::chrono::high_resolution_clock::now();
 			getRequest(RequestType::NEWS);
 			auto end = std::chrono::high_resolution_clock::now();

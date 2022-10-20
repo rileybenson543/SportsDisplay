@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <filesystem>
 enum RequestType {
     NEWS,
     SCORES,
@@ -10,5 +11,5 @@ enum RequestType {
 };
 using std::string;
 void getRequest(RequestType type);
-string downloadImage(string* url, string* filename);
+int downloadImageCurl(string* url, std::filesystem::path* destinationFilePath);
 void processData(string* unformatted, RequestType type);

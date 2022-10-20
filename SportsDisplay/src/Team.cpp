@@ -3,7 +3,7 @@
 #include "ImageProcessing.h"
 
 
-
+std::future<int> future;
 
 
 Team::Team() {}
@@ -21,8 +21,8 @@ Team::Team(
 {
 	// Download the image and process it
 	fullResLogoFilename = id + ".png";
-	string path = downloadImage(&logoUrl, &fullResLogoFilename);
-	processImage(path, 30);
+	future = std::async(std::launch::async, processImage, &logoUrl, &fullResLogoFilename, 30);
+	//Causes Memory Leak!!!!
 }
 
 void Team::setRecordFromString(string str_totalRecord, 

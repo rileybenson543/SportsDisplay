@@ -31,10 +31,10 @@ private:
 	string abbreviation;
 	string color;
 	string alternateColor;
-	record totalRecord;
-	record homeRecord;
-	record awayRecord;
+	record totalRecord{};
+	record homeRecord{};
+	record awayRecord{};
 	string logoUrl;
 	string fullResLogoFilename;
-	std::future<void> future;
+	std::future<int> future;
 };

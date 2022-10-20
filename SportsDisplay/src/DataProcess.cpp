@@ -61,7 +61,7 @@ string* getRequestCurl(string* url) {
     return nullptr;
 }
 
-void downloadImageCurl(string* url, string* filename) {
+int downloadImageCurl(string* url, std::filesystem::path* destinationFilePath) {
     CURL* curl;
     CURLcode res;
 
@@ -71,16 +71,16 @@ void downloadImageCurl(string* url, string* filename) {
         if (std::filesystem::is_directory("fullres") == 0) {
             std::filesystem::create_directory("fullres");
         }
-        std::filesystem::path fullpath = std::filesystem::current_path() / "fullres" / *filename;
-        //string fullfilename = ".\\fullres\\" + *filename;
-        FILE* fp = fopen(fullpath.string().c_str(), "wb");
+        FILE* fp = fopen(destinationFilePath->string().c_str(), "wb");
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, imageWriteCallback);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
         res = curl_easy_perform(curl);
         curl_easy_cleanup(curl);
         fclose(fp);
+        return 0;
     }
-    
+    return 1;
+    // log
 }
 
 
@@ -259,6 +259,7 @@ void processData(string* unformatted, RequestType type) {
                     jsonTeamsSection[i]["team"]["alternateColor"].asString(),
                     jsonTeamsSection[i]["team"]["logos"][0]["href"].asString()
                 );
+                // TODO: Need to clear out team map before making more
             }
             break;
         }
@@ -293,7 +294,7 @@ void processData(string* unformatted, RequestType type) {
 
 
 void getRequest(RequestType type) {
-    string* rawData;
+    string* rawData = new string();
     switch (type)
     {
     case(NEWS):
@@ -333,9 +334,9 @@ void getRequest(RequestType type) {
     delete rawData;
 }
 
-
-string downloadImage(string* url, string* filename) {
-    downloadImageCurl(url,filename);
-    std::filesystem::path fullpath = std::filesystem::current_path() / "fullres" / *filename;
-    return fullpath.string();
-}
+//
+//string downloadImage(string* url, string* filename) {
+//    downloadImageCurl(url,filename);
+//    std::filesystem::path fullpath = std::filesystem::current_path() / "fullres" / *filename;
+//    return fullpath.string();
+//}
