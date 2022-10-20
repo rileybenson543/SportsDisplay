@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <iostream>
+#include <future>
 
 struct record {
 	int wins;
@@ -35,4 +36,5 @@ private:
 	record awayRecord;
 	string logoUrl;
 	string fullResLogoFilename;
+	std::future<void> future;
 };

@@ -12,15 +12,18 @@ int main(void)
 {
 	//std::cout << getRequest(RequestType::NEWS) << std::endl;
 	//time_t prev = time(nullptr);
-	getRequest(RequestType::TEAMS);
+	//getRequest(RequestType::TEAMS);
 	std::cout << "Successfully downloaded and parsed team data" << "\n";
-	//while (true) {
-		//time_t now = time(nullptr);
-		//if (now - prev > 1) {
-			getRequest(RequestType::SCORES);
-			std::cout << "Received updated scores" << "\n";
-		//	time_t prev = time(nullptr);
-		//}
-	//}
-			std::cin.get();
+	//time_t now = time(nullptr);
+	//if (now - prev > 1) {
+		while (true) {
+			auto start = std::chrono::high_resolution_clock::now();
+			getRequest(RequestType::NEWS);
+			auto end = std::chrono::high_resolution_clock::now();
+			std::chrono::duration<float> duration = end - start;
+			std::cout << duration.count() << std::endl;
+		}
+	std::cout << "Received updated scores" << std::endl;;
+	//	time_t prev = time(nullptr);
+	std::cin.get();
 }

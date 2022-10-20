@@ -1,26 +1,29 @@
 #include "Event.h"
 
+
+
+
 Event::Event() {}
 
 Event::Event(
-	long _id,
-	string _str_scheduledDatetime,
-	string _detail,
-	string _shortDetail,
-	string _name,
-	string _shortName,
-	float _clock,
-	string _displayClock,
-	int _period,
+	int64_t _id,
+	string_view _str_scheduledDatetime,
+	string_view _detail,
+	string_view _shortDetail,
+	string_view _name,
+	string_view _shortName,
+	double _clock,
+	string_view _displayClock,
+	int64_t _period,
 	bool _completed,
-	string _state,
-	string _locationName,
-	int _homeTeamId,
-	int _awayTeamId,
-	int _homeTeamScore,
-	int _awayTeamScore,
-	string _briefDownText,
-	int _posessionTeamId,
+	string_view _state,
+	string_view _locationName,
+	int64_t _homeTeamId,
+	int64_t _awayTeamId,
+	int64_t _homeTeamScore,
+	int64_t _awayTeamScore,
+	string_view _briefDownText,
+	int64_t _posessionTeamId,
 	bool _isRedZone) 
 	: id(_id), str_scheduledDatetime(_str_scheduledDatetime), detail(_detail),
 		shortDetail(_shortDetail), name(_name), shortName(_shortName),

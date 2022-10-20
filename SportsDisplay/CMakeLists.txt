@@ -4,6 +4,7 @@
 cmake_minimum_required (VERSION 3.8)
 
 find_package( CURL REQUIRED )
+find_package(simdjson CONFIG REQUIRED)
 
 message(STATUS "Building for ${SYSTEM}")
 
@@ -14,7 +15,7 @@ add_executable (SportsDisplay  "include/SportsDisplay.h" "src/DataProcess.cpp" "
 
 if(SYSTEM STREQUAL "windows")
 find_package(jsoncpp CONFIG REQUIRED)
-target_link_libraries(SportsDisplay PRIVATE ${CURL_LIBRARIES} jsoncpp_lib jsoncpp_object JsonCpp::JsonCpp)
+target_link_libraries(SportsDisplay PRIVATE ${CURL_LIBRARIES} jsoncpp_lib jsoncpp_object JsonCpp::JsonCpp simdjson::simdjson)
 elseif(SYSTEM STREQUAL "ubuntu")
 find_package(jsoncpp CONFIG REQUIRED)
 target_link_libraries(SportsDisplay PRIVATE ${CURL_LIBRARIES} JsonCpp::JsonCpp jsoncpp_object ${JSONCPP_LIBRARIES})
