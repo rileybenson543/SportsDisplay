@@ -14,11 +14,11 @@ int main(void)
 	//time_t prev = time(nullptr);
 	//time_t now = time(nullptr);
 	//if (now - prev > 1) {
+		getRequest(RequestType::TEAMS);
+		std::cout << "Successfully downloaded and parsed team data" << "\n";
 		while (true) {
-			getRequest(RequestType::TEAMS);
-			std::cout << "Successfully downloaded and parsed team data" << "\n";
 			auto start = std::chrono::high_resolution_clock::now();
-			getRequest(RequestType::NEWS);
+			getRequest(RequestType::SCORES);
 			auto end = std::chrono::high_resolution_clock::now();
 			std::chrono::duration<float> duration = end - start;
 			std::cout << duration.count() << std::endl;
@@ -27,3 +27,6 @@ int main(void)
 	//	time_t prev = time(nullptr);
 	std::cin.get();
 }
+
+// Need to still implement a way to validate the data received
+// with bool ok = simdjson::validate_utf8(string, std::strlen(string));
