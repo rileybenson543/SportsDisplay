@@ -27,7 +27,9 @@ public:
 	void setRecordFromString(string str_totalRecord, 
 		string str_homeRecord, string str_awayRecord);
 	void readBitmapToMemory(std::filesystem::path filePath);
+	[[nodiscard]] std::vector<char>* getBitmap() const;
 	string getId();
+	//std::vector<char>* getBitmap();
 
 private:
 	string id;

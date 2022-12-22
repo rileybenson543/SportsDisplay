@@ -1,5 +1,3 @@
-
-//
 #include <iostream>
 #include <curl/curl.h>
 #include "DataProcess.h"
@@ -19,10 +17,10 @@ std::vector<NewsItem> news;
 
 std::vector<std::future<void>> futures;
 
-string* newsURL = new string("http://site.api.espn.com/apis/site/v2/sports/football/nfl/news");
-string* scoreURL = new string("http://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard");
-string* teamsURL = new string("http://site.api.espn.com/apis/site/v2/sports/football/nfl/teams");
-string* specificTeamURL = new string("http://site.api.espn.com/apis/site/v2/sports/football/nfl/teams/"); // append team id //before request
+const string newsURL = string("http://site.api.espn.com/apis/site/v2/sports/football/nfl/news");
+const string scoreURL = string("http://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard");
+const string teamsURL = string("http://site.api.espn.com/apis/site/v2/sports/football/nfl/teams");
+const string specificTeamURL = string("http://site.api.espn.com/apis/site/v2/sports/football/nfl/teams/"); // append team id //before request
 
 
 using std::string, std::string_view;
@@ -33,7 +31,7 @@ static size_t WriteCallback(void* contents, size_t size, size_t nmemb, void* use
     ((std::string*)userp)->append((char*)contents, size * nmemb);
     return size * nmemb;
 }
-static size_t imageWriteCallback(void* ptr, size_t size, size_t nmemb, FILE* stream)
+static size_t imageWriteCallback(const void* ptr, size_t size, size_t nmemb, FILE* stream)
 {
     size_t written;
     written = fwrite(ptr, size, nmemb, stream);
@@ -41,17 +39,14 @@ static size_t imageWriteCallback(void* ptr, size_t size, size_t nmemb, FILE* str
 }
 
 
-string* getRequestCurl(string* url) {
-    CURL* curl;
-    CURLcode res;
+string* getRequestCurl(const string* url) {
+	auto* readBuffer = new string();
 
-    string* readBuffer = new string();
-
-    curl = curl_easy_init();
-    if (curl) {
+	if (CURL* curl = curl_easy_init()) {
         curl_easy_setopt(curl, CURLOPT_URL, url->c_str());
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, readBuffer);
+        CURLcode res;
         res = curl_easy_perform(curl);
         curl_easy_cleanup(curl);
 
@@ -62,12 +57,8 @@ string* getRequestCurl(string* url) {
     return nullptr;
 }
 
-int downloadImageCurl(string* url, std::filesystem::path* destinationFilePath) {
-    CURL* curl;
-    CURLcode res;
-
-    curl = curl_easy_init();
-    if (curl) {
+int downloadImageCurl(const string* url, const std::filesystem::path* destinationFilePath) {
+	if (CURL* curl = curl_easy_init()) {
         curl_easy_setopt(curl, CURLOPT_URL, url->c_str());
         if (std::filesystem::is_directory("fullres") == 0) {
             std::filesystem::create_directory("fullres");
@@ -75,7 +66,9 @@ int downloadImageCurl(string* url, std::filesystem::path* destinationFilePath) {
         FILE* fp = fopen(destinationFilePath->string().c_str(), "wb");
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, imageWriteCallback);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
+        CURLcode res;
         res = curl_easy_perform(curl);
+        // use "res" to determine success
         curl_easy_cleanup(curl);
         fclose(fp);
         return 0;
@@ -88,15 +81,16 @@ int downloadImageCurl(string* url, std::filesystem::path* destinationFilePath) {
 void processDataSIMD(string* rawJsonData, RequestType type) {
 
     using namespace simdjson;
-    padded_string ps = padded_string(*rawJsonData);
+    auto const ps = padded_string(*rawJsonData);
 
     auto doc = parser.iterate(ps);
 
 
     switch (type) {
 
-        case(SCORES):
+        case SCORES:
         {
+            // events.clear();
             for (auto event : events) {
                 delete(event.second);
             }
@@ -104,22 +98,22 @@ void processDataSIMD(string* rawJsonData, RequestType type) {
             for (auto currEvent : doc["events"]) {
 
                 int64_t id = -1;
-                string_view str_scheduledDatetime = "";
-                string_view detail = "";
-                string_view shortDetail = "";
-                string_view name = "";
-                string_view shortName = "";
+                string_view str_scheduledDatetime;
+                string_view detail;
+                string_view shortDetail;
+                string_view name;
+                string_view shortName;
                 double clock = 999;
                 string_view displayClock;
                 int64_t period = -1;
                 bool completed = false;
-                string_view state = "";
-                string_view locationName = "";
+                string_view state;
+                string_view locationName;
                 int64_t homeTeamId = -1;
                 int64_t awayTeamId = -1;
                 int64_t homeTeamScore = -1;
                 int64_t awayTeamScore = -1;
-                string_view briefDownText = "";
+                string_view briefDownText;
                 int64_t posessionTeamId = -1;
                 bool isRedZone = false;
 
@@ -129,7 +123,7 @@ void processDataSIMD(string* rawJsonData, RequestType type) {
                 currEvent["shortName"].get_string().get(shortName);
                 currEvent["status"]["clock"].get_double().get(clock);
                 currEvent["status"]["displayClock"].get_string().get(displayClock);
-                currEvent["status"]["period"].get_int64_in_string().get(period);
+                currEvent["status"]["period"].get_int64().get(period);
                 currEvent["status"]["type"]["detail"].get_string().get(detail);
                 currEvent["status"]["type"]["shortDetail"].get_string().get(shortDetail);
                 currEvent["status"]["type"]["completed"].get_bool().get(completed);
@@ -140,10 +134,10 @@ void processDataSIMD(string* rawJsonData, RequestType type) {
                 currEvent["competitions"].at(0)["competitors"].at(0)["score"].get_int64_in_string().get(homeTeamScore);
                 currEvent["competitions"].at(0)["competitors"].at(1)["score"].get_int64_in_string().get(awayTeamScore);
                 currEvent["competitions"].at(0)["situation"]["downDistanceText"].get_string().get(briefDownText);
-                currEvent["competitions"].at(0)["situation"]["posession"].get_int64_in_string().get(posessionTeamId);
+                currEvent["competitions"].at(0)["situation"]["possession"].get_int64_in_string().get(posessionTeamId);
                 currEvent["competitions"].at(0)["situation"]["isRedZone"].get_bool().get(isRedZone);
 
-                Event* e = new Event(
+                auto* e = new Event(
                     id, str_scheduledDatetime, detail, shortDetail, name, shortName, clock, displayClock,
                     period, completed, state, locationName,
                     homeTeamId, awayTeamId, homeTeamScore, awayTeamScore,
@@ -155,9 +149,9 @@ void processDataSIMD(string* rawJsonData, RequestType type) {
 
                 // team record information is stored in the event
                 // request so we will gwt that data now
-                string_view total = "";
-                string_view home = "";
-                string_view away = "";
+                string_view total;
+                string_view home;
+                string_view away;
 
                 currEvent["competitions"].at(0)["competitors"].at(0)["records"].at(0)["summary"].get_string().get(total);
                 currEvent["competitions"].at(0)["competitors"].at(0)["records"].at(1)["summary"].get_string().get(home);
@@ -177,10 +171,10 @@ void processDataSIMD(string* rawJsonData, RequestType type) {
             }
             break;
         }
-        case(NEWS):
+        case NEWS:
         {
             for (auto article : doc["articles"]) {
-                string_view headline = "";
+                string_view headline;
                 int64_t relatedTeamId = 0;
 
                 article["categories"].at(2)["teamId"].get_int64().get(relatedTeamId);
@@ -189,159 +183,176 @@ void processDataSIMD(string* rawJsonData, RequestType type) {
                 news.emplace_back(headline, relatedTeamId);
             }
         }
+    case TEAMS:
+    {}
+    break;
+
+    case SPECIFIC_TEAM:
+    {}
+    break;
+
+    case SPECIFIC_TEAM_RECORD:
+	{}
+    break;
+
+    case TEAMS_ON_BYE:
+	{}
+    break;
+
     }
 }
 
 void processData(string* unformatted, RequestType type) {
     Json::Value jsonData;
     Json::Reader jsonReader;
-    string* headlineString = new string(); // MEMORY LEAK!!!!!
-    if (jsonReader.parse(*unformatted, jsonData))
+    auto* headlineString = new string(); // MEMORY LEAK!!!!!
+    if (!jsonReader.parse(*unformatted, jsonData))
+	    return;
+    switch (type)
     {
-        switch (type)
-        {
-        case NEWS:
-            for (unsigned int i = 0; i < jsonData["articles"].size(); i++) {
-                headlineString->append(jsonData["articles"][i]["headline"].asString()+"\n");
-            }
-            //std::cout << *headlineString << std::endl;
-            break;
-        case SCORES:
-        {
-            int jsonEventsSize = jsonData["events"].size();
-            for (int i = 0; i < jsonEventsSize; i++) {
-                Json::Value currEventJson = jsonData["events"][i];
-                long id = stol(currEventJson["id"].asString());
-                string downDistance = "";
-                int posessionId = 0;
-                bool redZone = false;
-                if (currEventJson["competitions"][0].isMember("situation")) {
-                    downDistance = currEventJson["competitions"][0]["situation"]["downDistanceText"].asString();
-                    redZone = currEventJson["competitions"][0]["situation"]["isRedZone"].asBool();
-                    if (currEventJson["competitions"][0]["situation"].isMember("posession")) {
-                        posessionId = stoi(currEventJson["competitions"][0]["situation"]["posession"].asString());
-                    }
-                }
-                int homeTeamId = stoi(currEventJson["competitions"][0]["competitors"][0]["id"].asString());
-                int awayTeamId = stoi(currEventJson["competitions"][0]["competitors"][1]["id"].asString());
-                events[id] = new Event(
-                    stol(currEventJson["id"].asString()),
-                    currEventJson["date"].asString(),
-                    currEventJson["status"]["type"]["detail"].asString(),
-                    currEventJson["status"]["type"]["shortDetail"].asString(),
-                    currEventJson["name"].asString(),
-                    currEventJson["shortName"].asString(),
-                    currEventJson["status"]["clock"].asFloat(),
-                    currEventJson["status"]["displayClock"].asString(),
-                    currEventJson["status"]["period"].asInt(),
-                    currEventJson["status"]["type"]["completed"].asBool(),
-                    currEventJson["status"]["type"]["type"]["state"].asString(),
-                    currEventJson["competitions"][0]["venue"]["fullName"].asString(),
-                    homeTeamId, awayTeamId,
-                    stoi(currEventJson["competitions"][0]["competitors"][0]["score"].asString()),
-                    stoi(currEventJson["competitions"][0]["competitors"][1]["score"].asString()),
-                    downDistance, posessionId, redZone
-                );
-                // set team records
-                teams[homeTeamId]->setRecordFromString(
-                    currEventJson["competitions"][0]["competitors"][0]["records"][0]["summary"].asString(),
-                    currEventJson["competitions"][0]["competitors"][0]["records"][1]["summary"].asString(),
-                    currEventJson["competitions"][0]["competitors"][0]["records"][2]["summary"].asString()
-                );
-                teams[awayTeamId]->setRecordFromString(
-                    currEventJson["competitions"][0]["competitors"][1]["records"][0]["summary"].asString(),
-                    currEventJson["competitions"][0]["competitors"][1]["records"][1]["summary"].asString(),
-                    currEventJson["competitions"][0]["competitors"][1]["records"][2]["summary"].asString()
-                );
-            }
+    case NEWS:
+	    for (unsigned int i = 0; i < jsonData["articles"].size(); i++) {
+		    headlineString->append(jsonData["articles"][i]["headline"].asString()+"\n");
+	    }
+    //std::cout << *headlineString << std::endl;
+	    break;
+    case SCORES:
+	    {
+		    int jsonEventsSize = jsonData["events"].size();
+		    for (int i = 0; i < jsonEventsSize; i++) {
+			    Json::Value currEventJson = jsonData["events"][i];
+			    long id = stol(currEventJson["id"].asString());
+			    string downDistance;
+			    int posessionId = 0;
+			    bool redZone = false;
+			    if (currEventJson["competitions"][0].isMember("situation")) {
+				    downDistance = currEventJson["competitions"][0]["situation"]["downDistanceText"].asString();
+				    redZone = currEventJson["competitions"][0]["situation"]["isRedZone"].asBool();
+				    if (currEventJson["competitions"][0]["situation"].isMember("posession")) {
+					    posessionId = stoi(currEventJson["competitions"][0]["situation"]["posession"].asString());
+				    }
+			    }
+			    int homeTeamId = stoi(currEventJson["competitions"][0]["competitors"][0]["id"].asString());
+			    int awayTeamId = stoi(currEventJson["competitions"][0]["competitors"][1]["id"].asString());
+			    events[id] = new Event(
+				    stol(currEventJson["id"].asString()),
+				    currEventJson["date"].asString(),
+				    currEventJson["status"]["type"]["detail"].asString(),
+				    currEventJson["status"]["type"]["shortDetail"].asString(),
+				    currEventJson["name"].asString(),
+				    currEventJson["shortName"].asString(),
+				    currEventJson["status"]["clock"].asFloat(),
+				    currEventJson["status"]["displayClock"].asString(),
+				    currEventJson["status"]["period"].asInt(),
+				    currEventJson["status"]["type"]["completed"].asBool(),
+				    currEventJson["status"]["type"]["type"]["state"].asString(),
+				    currEventJson["competitions"][0]["venue"]["fullName"].asString(),
+				    homeTeamId, awayTeamId,
+				    stoi(currEventJson["competitions"][0]["competitors"][0]["score"].asString()),
+				    stoi(currEventJson["competitions"][0]["competitors"][1]["score"].asString()),
+				    downDistance, posessionId, redZone
+			    );
+			    // set team records
+			    teams[homeTeamId]->setRecordFromString(
+				    currEventJson["competitions"][0]["competitors"][0]["records"][0]["summary"].asString(),
+				    currEventJson["competitions"][0]["competitors"][0]["records"][1]["summary"].asString(),
+				    currEventJson["competitions"][0]["competitors"][0]["records"][2]["summary"].asString()
+			    );
+			    teams[awayTeamId]->setRecordFromString(
+				    currEventJson["competitions"][0]["competitors"][1]["records"][0]["summary"].asString(),
+				    currEventJson["competitions"][0]["competitors"][1]["records"][1]["summary"].asString(),
+				    currEventJson["competitions"][0]["competitors"][1]["records"][2]["summary"].asString()
+			    );
+		    }
 
-            // Set records for teams on bye week
-            int numTeamsOnBye = jsonData["week"]["teamsOnBye"].size();
-            for (int i = 0; i < numTeamsOnBye; i++) {
-                int teamID = stoi(jsonData["week"]["teamsOnBye"][i]["id"].asString());
+		    // Set records for teams on bye week
+		    int numTeamsOnBye = jsonData["week"]["teamsOnBye"].size();
+		    for (int i = 0; i < numTeamsOnBye; i++) {
+			    int teamID = stoi(jsonData["week"]["teamsOnBye"][i]["id"].asString());
+			    string url_string = specificTeamURL + std::to_string(teamID);
+			    string* teamData = getRequestCurl(&url_string);
+			    processData(teamData, SPECIFIC_TEAM_RECORD);
+		    }
+		    break;
+	    }
+    case TEAMS:
+	    {
+		    Json::Value jsonTeamsSection = jsonData["sports"][0]["leagues"][0]["teams"];
+		    int const jsonTeamsSize = jsonTeamsSection.size();
+		    for (int i = 0; i < jsonTeamsSize; i++) {
+			    int id = stoi(jsonTeamsSection[i]["team"]["id"].asString());
+			    teams[id] = new Team(
+				    jsonTeamsSection[i]["team"]["id"].asString(),
+				    jsonTeamsSection[i]["team"]["displayName"].asString(),
+				    jsonTeamsSection[i]["team"]["nickname"].asString(),
+				    jsonTeamsSection[i]["team"]["abbreviation"].asString(),
+				    jsonTeamsSection[i]["team"]["color"].asString(),
+				    jsonTeamsSection[i]["team"]["alternateColor"].asString(),
+				    jsonTeamsSection[i]["team"]["logos"][0]["href"].asString()
+			    );
+			    // TODO: Need to clear out team map before making more
+		    }
+		    break;
+	    }
 
-                string* teamData = getRequestCurl(&specificTeamURL->append(std::to_string(teamID)));
-                processData(teamData, SPECIFIC_TEAM_RECORD);
-            }
-            break;
-        }
-        case TEAMS:
-        {
-            Json::Value jsonTeamsSection = jsonData["sports"][0]["leagues"][0]["teams"];
-            int const jsonTeamsSize = jsonTeamsSection.size();
-            for (int i = 0; i < jsonTeamsSize; i++) {
-                int id = stoi(jsonTeamsSection[i]["team"]["id"].asString());
-                teams[id] = new Team(
-                    jsonTeamsSection[i]["team"]["id"].asString(),
-                    jsonTeamsSection[i]["team"]["displayName"].asString(),
-                    jsonTeamsSection[i]["team"]["nickname"].asString(),
-                    jsonTeamsSection[i]["team"]["abbreviation"].asString(),
-                    jsonTeamsSection[i]["team"]["color"].asString(),
-                    jsonTeamsSection[i]["team"]["alternateColor"].asString(),
-                    jsonTeamsSection[i]["team"]["logos"][0]["href"].asString()
-                );
-                // TODO: Need to clear out team map before making more
-            }
-            break;
-        }
-
-        case SPECIFIC_TEAM_RECORD:
-        {
-            int teamID = stoi(jsonData["team"]["id"].asString());
+    case SPECIFIC_TEAM_RECORD:
+	    {
+		    int teamID = stoi(jsonData["team"]["id"].asString());
            
-            teams[teamID]->setRecordFromString(
-                jsonData["team"]["record"]["items"][0]["summary"].asString(),
-                jsonData["team"]["record"]["items"][1]["summary"].asString(),
-                jsonData["team"]["record"]["items"][2]["summary"].asString()
-            );
+		    teams[teamID]->setRecordFromString(
+			    jsonData["team"]["record"]["items"][0]["summary"].asString(),
+			    jsonData["team"]["record"]["items"][1]["summary"].asString(),
+			    jsonData["team"]["record"]["items"][2]["summary"].asString()
+		    );
             
 
-            break;
-        }
-        case TEAMS_ON_BYE:
-        {
-            int numTeamsOnBye = jsonData["week"]["teamsOnBye"].size();
-            for (int i = 0; i < numTeamsOnBye; i++) {
-                int teamID = stoi(jsonData["week"]["teamsOnBye"][i]["id"].asString());
-                string* teamData = getRequestCurl(&specificTeamURL->append(std::to_string(teamID)));
-                processData(teamData, SPECIFIC_TEAM_RECORD);
-            }
-        }
-        default:
-            break;
-        }
+		    break;
+	    }
+    case TEAMS_ON_BYE:
+	    {
+		    int numTeamsOnBye = jsonData["week"]["teamsOnBye"].size();
+		    for (int i = 0; i < numTeamsOnBye; i++) {                
+			    string teamID = jsonData["week"]["teamsOnBye"][i]["id"].asString();
+			    auto urlString = string();
+			    urlString.append(specificTeamURL);
+			    urlString.append(teamID);
+			    string* teamData = getRequestCurl(&urlString);
+			    processData(teamData, SPECIFIC_TEAM_RECORD);
+		    }
+	    }
+    default:
+	    break;
     }
 }
 
 
 void getRequest(RequestType type) {
-    string* rawData = new string();
+    auto* rawData = new string();
     switch (type)
     {
-    case(NEWS):
-        rawData = getRequestCurl(newsURL);
+    case NEWS:
+        rawData = getRequestCurl(&newsURL);
         processData(rawData, type);
         break;
-    case(SCORES):
+    case SCORES:
     {
-        rawData = getRequestCurl(scoreURL);        
+        rawData = getRequestCurl(&scoreURL);        
         processDataSIMD(rawData, SCORES);
         //processData(rawData, SCORES);
         break;
     }
-    case(TEAMS):
+    case TEAMS:
     {
-        rawData = getRequestCurl(teamsURL);
+        rawData = getRequestCurl(&teamsURL);
         processData(rawData, type);
 
-        string* rawEventData = getRequestCurl(scoreURL);
+        string* rawEventData = getRequestCurl(&scoreURL);
         processData(rawEventData, TEAMS_ON_BYE);
-
         delete rawEventData;
 
         break;
     }
-    case(TEAMS_ON_BYE): 
+    case TEAMS_ON_BYE: 
     {
 
     }
@@ -350,4 +361,21 @@ void getRequest(RequestType type) {
     }
 
     delete rawData;
+}
+
+//std::vector<string> getEventsStrings() {
+//    std::vector<string> events_strings = std::vector<string>();
+//    for (const auto& [key, value] : events) {
+//        events_strings.push_back(value->printString());
+//    }
+//    return events_strings;
+//}
+
+std::unordered_map<int, Event*>* getEvents()
+{
+    return &events;
+}
+std::unordered_map<int, Team*>* getTeams()
+{
+    return &teams;
 }

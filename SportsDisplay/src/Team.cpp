@@ -16,8 +16,8 @@ Team::Team(
 	string _color, 
 	string _alternateColor,  
 	string _logoUrl) 
-	: id(_id), name(_name), shortName(_shortName), abbreviation(_abbreviation),
-	color(_color), alternateColor(_alternateColor), logoUrl(_logoUrl) 
+	: id(std::move(_id)), name(std::move(_name)), shortName(std::move(_shortName)), abbreviation(std::move(_abbreviation)),
+	color(std::move(_color)), alternateColor(std::move(_alternateColor)), logoUrl(std::move(_logoUrl)) 
 {
 	// Download the image and process it
 	fullResLogoFilename = id + ".png";
@@ -59,7 +59,7 @@ void Team::readBitmapToMemory(std::filesystem::path filePath) {
 	// create a buffer
 	// and resize it to the 
 	// size of the file
-	vector<char>* buffer = new vector<char>;
+	auto* buffer = new vector<char>;
 	buffer->resize(size);
 
 	// read file data into buffer
@@ -72,4 +72,9 @@ void Team::readBitmapToMemory(std::filesystem::path filePath) {
 		buffer->erase(buffer->begin(), buffer->begin() + 54);
 	}
 	raw_bitmap = buffer;
+}
+
+std::vector<char>* Team::getBitmap() const
+{
+	return raw_bitmap;
 }

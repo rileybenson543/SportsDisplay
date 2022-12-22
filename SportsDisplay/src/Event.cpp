@@ -1,7 +1,8 @@
 #include "Event.h"
+#include <string>
+#include <chrono>
 
-
-
+using std::string;
 
 Event::Event() {}
 
@@ -34,4 +35,94 @@ Event::Event(
 		posessionTeamId(_posessionTeamId), isRedZone(_isRedZone)
 {
 
+}
+string Event::printString() {
+	auto s = string();
+	string datetime_pre = string(str_scheduledDatetime);
+	string datetime = convertTimeToEST(&datetime_pre);
+	s = string(state) + "/"
+		+ std::to_string(homeTeamId) + "/" + std::to_string(awayTeamId) + "/";
+	if (state == "pre")
+		s = s + datetime.substr(0,2) //convertMonthNumToString(stoi(datetime.substr(0, 2)))
+		+ "/" + datetime.substr(2, 7) + "/";
+	else if (state == "in")
+		s = s + std::to_string(homeTeamScore) + "/" + std::to_string(awayTeamScore)
+		+ "/" + std::to_string(period)
+		+ "/" + string(displayClock) + "/";
+	else if (state == "post")
+		s = s + std::to_string(homeTeamScore) + "/" + std::to_string(awayTeamScore);
+	return string(s);
+}
+string Event::convertTimeToEST(const string* UTCInput) {
+	// 2022-12-16T01:15Z
+	enum timeOfDay {
+		am = 0,
+		pm = 1
+	};
+	timeOfDay TOD;
+	string year = UTCInput->substr(0, 4);
+	string month = UTCInput->substr(5, 2);
+	int day = stoi(UTCInput->substr(8, 2));
+	int hour = stoi(UTCInput->substr(11, 2));
+	string minute = UTCInput->substr(14, 2);
+
+	// converting to EST
+	// TODO: Will eventually need
+	// to find a better way to do this
+	constexpr int EST_OFFSET = -5;
+	int EST_hour = hour + EST_OFFSET;
+	if (EST_hour < 0) {
+		EST_hour = EST_hour + 24;
+		day--;
+	}
+
+	// Converting to 12-hour format
+	if (EST_hour < 12) {
+		TOD = am;
+	}
+	else {
+		TOD = pm;
+		EST_hour -= 12;
+	}
+	string hour_str;
+	if (EST_hour < 10) 
+		hour_str = "0" + std::to_string(EST_hour);
+	else
+		hour_str = std::to_string(EST_hour);
+
+	return month + std::to_string(day) + hour_str 
+		+ minute + std::to_string(TOD);
+}
+
+
+string Event::convertMonthNumToString(int monthNum) {
+	switch (monthNum) {
+	case 1:
+		return "Jan";
+	case 2:
+		return "Feb";
+	case 3:
+		return "Mar";
+	case 4:
+		return "Apr";
+	case 5:
+		return "May";
+	case 6:
+		return "Jun";
+	case 7:
+		return "Jul";
+	case 8:
+		return "Aug";
+	case 9:
+		return "Sep";
+	case 10:
+		return "Oct";
+	case 11:
+		return "Nov";
+	case 12:
+		return "Dec";
+	default:
+		return "NaN";
+
+	}
 }

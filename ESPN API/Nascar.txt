@@ -1,0 +1,4 @@
+http://sports.core.api.espn.com/v2/sports/racing/leagues
+http://sports.core.api.espn.com/v2/sports/racing/leagues/nascar-premier/events
+http://sports.core.api.espn.com/v2/sports/racing/leagues/nascar-premier/events/202210230042?lang=en&region=us
+http://sports.core.api.espn.com/v2/sports/racing/athletes/4495?lang=en&region=us
