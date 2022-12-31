@@ -81,7 +81,7 @@ int downloadImageCurl(const string* url, const std::filesystem::path* destinatio
 void processDataSIMD(string* rawJsonData, RequestType type) {
 
     using namespace simdjson;
-    auto const ps = padded_string(*rawJsonData);
+	auto const ps = padded_string(*rawJsonData);
 
     auto doc = parser.iterate(ps);
 
@@ -89,88 +89,152 @@ void processDataSIMD(string* rawJsonData, RequestType type) {
     switch (type) {
 
         case SCORES:
-        {
-            // events.clear();
-            for (auto event : events) {
-                delete(event.second);
-            }
+	    {
+		    //events.clear();
+		    for (auto event : events)
+		    {
+			    delete(event.second);
+		    }
 
-            for (auto currEvent : doc["events"]) {
+		    for (auto currEvent : doc["events"])
+		    {
+			    int64_t id = -1;
+			    string_view str_scheduledDatetime;
+			    string_view detail;
+			    string_view shortDetail;
+			    string_view name;
+			    string_view shortName;
+			    double clock = 999;
+			    string_view displayClock;
+			    int64_t period = -1;
+			    bool completed = false;
+			    string_view state;
+			    string_view locationName;
+			    int64_t homeTeamId = -1;
+			    int64_t awayTeamId = -1;
+			    int64_t homeTeamScore = -1;
+			    int64_t awayTeamScore = -1;
+			    string_view briefDownText;
+			    int64_t posessionTeamId = -1;
+			    int64_t yardLine = -1;
+			    bool isRedZone = false;
 
-                int64_t id = -1;
-                string_view str_scheduledDatetime;
-                string_view detail;
-                string_view shortDetail;
-                string_view name;
-                string_view shortName;
-                double clock = 999;
-                string_view displayClock;
-                int64_t period = -1;
-                bool completed = false;
-                string_view state;
-                string_view locationName;
-                int64_t homeTeamId = -1;
-                int64_t awayTeamId = -1;
-                int64_t homeTeamScore = -1;
-                int64_t awayTeamScore = -1;
-                string_view briefDownText;
-                int64_t posessionTeamId = -1;
-                bool isRedZone = false;
+			    currEvent["id"].get_int64_in_string().get(id);
+			    currEvent["date"].get_string().get(str_scheduledDatetime);
+			    currEvent["name"].get_string().get(name);
+			    currEvent["shortName"].get_string().get(shortName);
+			    currEvent["status"]["clock"].get_double().get(clock);
+			    currEvent["status"]["displayClock"].get_string().get(displayClock);
+			    currEvent["status"]["period"].get_int64().get(period);
+			    currEvent["status"]["type"]["detail"].get_string().get(detail);
+			    currEvent["status"]["type"]["shortDetail"].get_string().get(shortDetail);
+			    currEvent["status"]["type"]["completed"].get_bool().get(completed);
+			    currEvent["status"]["type"]["state"].get_string().get(state);
+			    currEvent["competitions"].at(0)["venue"]["fullName"].get_string().get(locationName);
+			    currEvent["competitions"].at(0)["competitors"].at(0)["id"].get_int64_in_string().get(homeTeamId);
+			    currEvent["competitions"].at(0)["competitors"].at(1)["id"].get_int64_in_string().get(awayTeamId);
+			    currEvent["competitions"].at(0)["competitors"].at(0)["score"].get_int64_in_string().get(homeTeamScore);
+			    currEvent["competitions"].at(0)["competitors"].at(1)["score"].get_int64_in_string().get(awayTeamScore);
+			    currEvent["competitions"].at(0)["situation"]["downDistanceText"].get_string().get(briefDownText);
+			    currEvent["competitions"].at(0)["situation"]["possession"].get_int64_in_string().get(posessionTeamId);
+			    currEvent["competitions"].at(0)["situation"]["lastPlay"]["end"]["yardLine"].get_int64_in_string().get(yardLine);
+			    currEvent["competitions"].at(0)["situation"]["isRedZone"].get_bool().get(isRedZone);
 
-                currEvent["id"].get_int64_in_string().get(id);
-                currEvent["date"].get_string().get(str_scheduledDatetime);
-                currEvent["name"].get_string().get(name);
-                currEvent["shortName"].get_string().get(shortName);
-                currEvent["status"]["clock"].get_double().get(clock);
-                currEvent["status"]["displayClock"].get_string().get(displayClock);
-                currEvent["status"]["period"].get_int64().get(period);
-                currEvent["status"]["type"]["detail"].get_string().get(detail);
-                currEvent["status"]["type"]["shortDetail"].get_string().get(shortDetail);
-                currEvent["status"]["type"]["completed"].get_bool().get(completed);
-                currEvent["status"]["type"]["state"].get_string().get(state);
-                currEvent["competitions"].at(0)["venue"]["fullName"].get_string().get(locationName);
-                currEvent["competitions"].at(0)["competitors"].at(0)["id"].get_int64_in_string().get(homeTeamId);
-                currEvent["competitions"].at(0)["competitors"].at(1)["id"].get_int64_in_string().get(awayTeamId);
-                currEvent["competitions"].at(0)["competitors"].at(0)["score"].get_int64_in_string().get(homeTeamScore);
-                currEvent["competitions"].at(0)["competitors"].at(1)["score"].get_int64_in_string().get(awayTeamScore);
-                currEvent["competitions"].at(0)["situation"]["downDistanceText"].get_string().get(briefDownText);
-                currEvent["competitions"].at(0)["situation"]["possession"].get_int64_in_string().get(posessionTeamId);
-                currEvent["competitions"].at(0)["situation"]["isRedZone"].get_bool().get(isRedZone);
+			    auto* e = new Event(
+                    id, string(str_scheduledDatetime), string(detail), string(shortDetail), string(name), string(shortName), clock, string(displayClock),
+                    period, completed, string(state), string(locationName),
+				    homeTeamId, awayTeamId, homeTeamScore, awayTeamScore,
+                    string(briefDownText), posessionTeamId, yardLine, isRedZone
+			    );
 
-                auto* e = new Event(
-                    id, str_scheduledDatetime, detail, shortDetail, name, shortName, clock, displayClock,
-                    period, completed, state, locationName,
-                    homeTeamId, awayTeamId, homeTeamScore, awayTeamScore,
-                    briefDownText, posessionTeamId, isRedZone
-                );
-
-                events[id] = e;
-
-
-                // team record information is stored in the event
-                // request so we will gwt that data now
-                string_view total;
-                string_view home;
-                string_view away;
-
-                currEvent["competitions"].at(0)["competitors"].at(0)["records"].at(0)["summary"].get_string().get(total);
-                currEvent["competitions"].at(0)["competitors"].at(0)["records"].at(1)["summary"].get_string().get(home);
-                currEvent["competitions"].at(0)["competitors"].at(0)["records"].at(2)["summary"].get_string().get(away);
+			    events[id] = e;
 
 
-                // pass the string to the Team to be processed and stored
-                // TODO: need to use string_view instead of casting to string
-                teams[homeTeamId]->setRecordFromString((string)total, (string)home, (string)away);
+			    // team record information is stored in the event
+			    // request so we will gwt that data now
+			    string_view total;
+			    string_view home;
+			    string_view away;
 
-                currEvent["competitions"].at(0)["competitors"].at(0)["records"].at(0)["summary"].get_string().get(total);
-                currEvent["competitions"].at(0)["competitors"].at(0)["records"].at(1)["summary"].get_string().get(home);
-                currEvent["competitions"].at(0)["competitors"].at(0)["records"].at(2)["summary"].get_string().get(away);
+			    currEvent["competitions"].at(0)["competitors"].at(0)["records"].at(0)["summary"].get_string().
+				    get(total);
+			    currEvent["competitions"].at(0)["competitors"].at(0)["records"].at(1)["summary"].get_string().get(home);
+			    currEvent["competitions"].at(0)["competitors"].at(0)["records"].at(2)["summary"].get_string().get(away);
 
-                // add to the away teams as well
-                teams[awayTeamId]->setRecordFromString((string)total, (string)home, (string)away);
-            }
-            break;
-        }
+
+			    // pass the string to the Team to be processed and stored
+			    // TODO: need to use string_view instead of casting to string
+			    teams[homeTeamId]->setRecordFromString((string)total, (string)home, (string)away);
+
+			    currEvent["competitions"].at(0)["competitors"].at(0)["records"].at(0)["summary"].get_string().
+				    get(total);
+			    currEvent["competitions"].at(0)["competitors"].at(0)["records"].at(1)["summary"].get_string().get(home);
+			    currEvent["competitions"].at(0)["competitors"].at(0)["records"].at(2)["summary"].get_string().get(away);
+
+			    // add to the away teams as well
+			    teams[awayTeamId]->setRecordFromString((string)total, (string)home, (string)away);
+		    }
+	    }
+		break;
+		case SPECIFIC_EVENT:
+	    {
+
+	        int64_t id = -1;
+	        string_view str_scheduledDatetime;
+	        string_view detail;
+	        string_view shortDetail;
+	        string_view name;
+	        string_view shortName;
+	        double clock = 999;
+	        string_view displayClock;
+	        int64_t period = -1;
+	        bool completed = false;
+	        string_view state;
+	        string_view locationName;
+	        int64_t homeTeamId = -1;
+	        int64_t awayTeamId = -1;
+	        int64_t homeTeamScore = -1;
+	        int64_t awayTeamScore = -1;
+	        string_view briefDownText;
+	        int64_t posessionTeamId = -1;
+	        int64_t yardLine = -1;
+	        bool isRedZone = false;
+
+	        doc["id"].get_int64_in_string().get(id);
+	        doc["date"].get_string().get(str_scheduledDatetime);
+	        doc["name"].get_string().get(name);
+	        doc["shortName"].get_string().get(shortName);
+	        doc["status"]["clock"].get_double().get(clock);
+	        doc["status"]["displayClock"].get_string().get(displayClock);
+	        doc["status"]["period"].get_int64().get(period);
+	        doc["status"]["type"]["detail"].get_string().get(detail);
+	        doc["status"]["type"]["shortDetail"].get_string().get(shortDetail);
+	        doc["status"]["type"]["completed"].get_bool().get(completed);
+	        doc["status"]["type"]["state"].get_string().get(state);
+	        doc["competitions"].at(0)["venue"]["fullName"].get_string().get(locationName);
+	        doc["competitions"].at(0)["competitors"].at(0)["id"].get_int64_in_string().get(homeTeamId);
+	        doc["competitions"].at(0)["competitors"].at(1)["id"].get_int64_in_string().get(awayTeamId);
+	        doc["competitions"].at(0)["competitors"].at(0)["score"].get_int64_in_string().get(homeTeamScore);
+	        doc["competitions"].at(0)["competitors"].at(1)["score"].get_int64_in_string().get(awayTeamScore);
+	        doc["competitions"].at(0)["situation"]["downDistanceText"].get_string().get(briefDownText);
+	        doc["competitions"].at(0)["situation"]["possession"].get_int64_in_string().get(posessionTeamId);
+	        doc["competitions"].at(0)["situation"]["lastPlay"]["end"]["yardLine"].get_int64_in_string().get(yardLine);
+	        doc["competitions"].at(0)["situation"]["isRedZone"].get_bool().get(isRedZone);
+
+
+			auto* e = new Event(
+				id, string(str_scheduledDatetime), string(detail), string(shortDetail), string(name), string(shortName), clock, string(displayClock),
+				period, completed, string(state), string(locationName),
+				homeTeamId, awayTeamId, homeTeamScore, awayTeamScore,
+				string(briefDownText), posessionTeamId, yardLine, isRedZone
+			);
+
+
+	        delete events[id];
+	        events[id] = e;
+
+	    }
+        break;
         case NEWS:
         {
             for (auto article : doc["articles"]) {
@@ -183,6 +247,7 @@ void processDataSIMD(string* rawJsonData, RequestType type) {
                 news.emplace_back(headline, relatedTeamId);
             }
         }
+        break;
     case TEAMS:
     {}
     break;
@@ -250,7 +315,9 @@ void processData(string* unformatted, RequestType type) {
 				    homeTeamId, awayTeamId,
 				    stoi(currEventJson["competitions"][0]["competitors"][0]["score"].asString()),
 				    stoi(currEventJson["competitions"][0]["competitors"][1]["score"].asString()),
-				    downDistance, posessionId, redZone
+				    downDistance, posessionId,
+                    currEventJson["competitions"][0]["situation"]["lastPlay"]["end"]["yardLine"].asInt64(),
+                    redZone
 			    );
 			    // set team records
 			    teams[homeTeamId]->setRecordFromString(
@@ -326,7 +393,7 @@ void processData(string* unformatted, RequestType type) {
 }
 
 
-void getRequest(RequestType type) {
+void getRequest(RequestType type, int64_t id) {
     auto* rawData = new string();
     switch (type)
     {
@@ -348,7 +415,7 @@ void getRequest(RequestType type) {
 
         string* rawEventData = getRequestCurl(&scoreURL);
         processData(rawEventData, TEAMS_ON_BYE);
-        delete rawEventData;
+        delete rawEventData; // may not be necessary
 
         break;
     }
@@ -356,6 +423,13 @@ void getRequest(RequestType type) {
     {
 
     }
+    case SPECIFIC_EVENT:
+    {
+        const string id_str = std::to_string(id);
+        const string url_string = scoreURL + "/" + id_str;
+        rawData = getRequestCurl(&url_string);
+        processDataSIMD(rawData, SPECIFIC_EVENT);
+    }   
     default:
         break;
     }

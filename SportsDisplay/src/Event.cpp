@@ -1,30 +1,33 @@
 #include "Event.h"
 #include <string>
 #include <chrono>
+#include <cstring>
+#include "DataProcess.h"
 
 using std::string;
 
-Event::Event() {}
+Event::Event() = default;
 
 Event::Event(
 	int64_t _id,
-	string_view _str_scheduledDatetime,
-	string_view _detail,
-	string_view _shortDetail,
-	string_view _name,
-	string_view _shortName,
+	string _str_scheduledDatetime,
+	string _detail,
+	string _shortDetail,
+	string _name,
+	string _shortName,
 	double _clock,
-	string_view _displayClock,
+	string _displayClock,
 	int64_t _period,
 	bool _completed,
-	string_view _state,
-	string_view _locationName,
+	string _state,
+	string _locationName,
 	int64_t _homeTeamId,
 	int64_t _awayTeamId,
 	int64_t _homeTeamScore,
 	int64_t _awayTeamScore,
-	string_view _briefDownText,
+	string _briefDownText,
 	int64_t _posessionTeamId,
+	int64_t _yardLine,
 	bool _isRedZone) 
 	: id(_id), str_scheduledDatetime(_str_scheduledDatetime), detail(_detail),
 		shortDetail(_shortDetail), name(_name), shortName(_shortName),
@@ -32,28 +35,32 @@ Event::Event(
 		completed(_completed), state(_state), locationName(_locationName),
 		homeTeamId(_homeTeamId), awayTeamId(_awayTeamId), homeTeamScore(_homeTeamScore),
 		awayTeamScore(_awayTeamScore), briefDownText(_briefDownText),
-		posessionTeamId(_posessionTeamId), isRedZone(_isRedZone)
+		posessionTeamId(_posessionTeamId), yardLine(_yardLine), isRedZone(_isRedZone)
 {
 
 }
 string Event::printString() {
 	auto s = string();
-	string datetime_pre = string(str_scheduledDatetime);
-	string datetime = convertTimeToEST(&datetime_pre);
+	string datetime_UTC = string(str_scheduledDatetime);
+	string datetime = convertTimeToEST(&datetime_UTC);
 	s = string(state) + "/"
 		+ std::to_string(homeTeamId) + "/" + std::to_string(awayTeamId) + "/";
 	if (state == "pre")
-		s = s + datetime.substr(0,2) //convertMonthNumToString(stoi(datetime.substr(0, 2)))
-		+ "/" + datetime.substr(2, 7) + "/";
+		s = s + convertMonthNumToString(stoi(datetime.substr(0, 2))) // datetime.substr(0,2)
+		 + datetime.substr(2, strlen(datetime.c_str())) + "/";
 	else if (state == "in")
 		s = s + std::to_string(homeTeamScore) + "/" + std::to_string(awayTeamScore)
 		+ "/" + std::to_string(period)
-		+ "/" + string(displayClock) + "/";
+		+ "/" + string(displayClock)
+		+ "/" + string(briefDownText)
+		+ "/" + determineHomeOrAwayHasPossession()
+		+ "/" + getPossessionString();
 	else if (state == "post")
 		s = s + std::to_string(homeTeamScore) + "/" + std::to_string(awayTeamScore);
 	return string(s);
 }
-string Event::convertTimeToEST(const string* UTCInput) {
+string Event::convertTimeToEST(const string* UTCInput) const
+{
 	// 2022-12-16T01:15Z
 	enum timeOfDay {
 		am = 0,
@@ -84,14 +91,14 @@ string Event::convertTimeToEST(const string* UTCInput) {
 		TOD = pm;
 		EST_hour -= 12;
 	}
-	string hour_str;
-	if (EST_hour < 10) 
-		hour_str = "0" + std::to_string(EST_hour);
-	else
-		hour_str = std::to_string(EST_hour);
+	//string hour_str;
+	//if (EST_hour < 10) 
+	//	hour_str = "0" + std::to_string(EST_hour);
+	//else
+	//	hour_str = std::to_string(EST_hour);
 
-	return month + std::to_string(day) + hour_str 
-		+ minute + std::to_string(TOD);
+	return month + "-" + std::to_string(day) + "-" + std::to_string(EST_hour)
+		+ "-" + minute + "-" + std::to_string(TOD);
 }
 
 
@@ -125,4 +132,18 @@ string Event::convertMonthNumToString(int monthNum) {
 		return "NaN";
 
 	}
+}
+
+char Event::determineHomeOrAwayHasPossession() const
+{
+	if (posessionTeamId == homeTeamId)
+		return 'H'; // Home team has ball
+	else if (posessionTeamId == awayTeamId)
+		return 'A'; // Away team has ball
+	return 'X'; // no possession recorded
+}
+
+string Event::getPossessionString() const
+{
+	return getTeams()->at(posessionTeamId)->getAbbrName() + " " + std::to_string(yardLine);
 }

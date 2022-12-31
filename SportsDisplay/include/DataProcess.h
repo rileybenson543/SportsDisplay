@@ -15,10 +15,11 @@ enum RequestType {
     TEAMS,
     SPECIFIC_TEAM,
     SPECIFIC_TEAM_RECORD,
-    TEAMS_ON_BYE
+    TEAMS_ON_BYE,
+    SPECIFIC_EVENT
 };
 using std::string;
-void getRequest(RequestType type);
+void getRequest(RequestType type, int64_t id = 0);
 int downloadImageCurl(const string* url, const std::filesystem::path* destinationFilePath);
 void processData(string* unformatted, RequestType type);
 std::vector<string> getEventsStrings();

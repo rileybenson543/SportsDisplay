@@ -2,7 +2,6 @@
 #include "SportsDisplay.h"
 #include "DataProcess.h"
 #include <iostream>
-#include "ImageProcessing.h"
 #include "Team.h"
 #include "Event.h"
 #include "Serial.h"
@@ -50,54 +49,67 @@ int main()
 
 			sleep_for(seconds(5));
 			while (true) {
-				for (const auto& [key, val] : events)
+				for (auto i = events.begin(); i != events.end(); i++)
 				{
 					// First message containing scores
 					// and time remaining
+					int key = i->first;
+					Event* val = i->second;
 					SerialMessage s;
-					s.type = TransmissionType::SingleEvent;
+					s.type = TransmissionType::SingleEventWithBitmap;
 					s.homeTeamId = val->homeTeamId;
 					s.awayTeamId = val->awayTeamId;
 					s.string_data = val->printString();
+					s.sendingBitmap = true;
 
 					sendMessage(s);
 
 					// Messages for bitmaps
 					s.type = TransmissionType::Bitmap;
-					s.bmp = teams[val->homeTeamId]->getBitmap();
+					s.bmp = teams.at(val->homeTeamId)->getBitmap();
 					sendMessage(s);
 
-					s.bmp = teams[val->awayTeamId]->getBitmap();
+					s.bmp = teams.at(val->awayTeamId)->getBitmap();
 					sendMessage(s);
 
-					auto start = high_resolution_clock::now();
-					getRequest(RequestType::SCORES);
-					events = *getEvents();
-					teams = *getTeams();
-					auto end = high_resolution_clock::now();
-					auto diff = end - start;
+					//auto start = high_resolution_clock::now();
 
-					sleep_for(seconds(10));
+					//auto end = high_resolution_clock::now();
+					//auto diff = end - start;
+
 
 					//sleep_for(seconds(1)-nanoseconds(diff));
 					//std::cout << seconds(1) - nanoseconds(diff) << "\t";
-					std::cout << "Iterate" << "\n";
+					//std::cout << "Iterate" << "\n";
+
+					SerialMessage previousMessage;
+
+					for (int j = 0; j < 10; j++)
+					{
+						sleep_for(milliseconds(500));
+						getRequest(RequestType::SPECIFIC_EVENT, key);
+						events = *getEvents();
+						Event* e = events[key];
+						s.type = TransmissionType::SingleEvent;
+						s.homeTeamId = e->homeTeamId;
+						s.awayTeamId = e->awayTeamId; // needs to be phased out
+						s.string_data = e->printString();
+						s.sendingBitmap = false;
+						if (s == previousMessage)
+							continue;
+						sendMessage(s);
+						previousMessage = s;
+					}
+
+					//sleep_for(seconds(10));
 				}
+
+				// Update data before beginning next iteration
+				getRequest(RequestType::SCORES);
+				events = *getEvents();
+				teams = *getTeams();
 			}
-
-			// TODO need to allow updating a single
-			// event and only updating all the events once
-			// we are done iterating through them
-
-
-
-			//s.homeTeamId = events[401437908]->homeTeamId;
-			//s.awayTeamId = events[401437908]->awayTeamId;
-			//std::vector<char>* homeBitmap_ptr = teams[events[401437908]->homeTeamId]->getBitmap();
-			//std::vector<char>* awayBitmap_ptr = teams[events[401437908]->awayTeamId]->getBitmap();
-			/*sendMessage(s);*/
-
-
+	
 	//	time_t prev = time(nullptr);
 	std::cin.get();
 }

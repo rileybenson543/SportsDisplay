@@ -9,46 +9,35 @@ public:
 	int64_t homeTeamId{};
 	int64_t awayTeamId{};
 	Event();
-	Event(
-		int64_t id,
-		string_view str_scheduledDatetime,
-		string_view detail,
-		string_view shortDetail,
-		string_view name,
-		string_view shortName,
-		double clock,
-		string_view displayClock,
-		int64_t period,
-		bool completed,
-		string_view state,
-		string_view locationName,
-		int64_t homeTeamId,
-		int64_t awayTeamId,
-		int64_t homeTeamScore,
-		int64_t awayTeamScore,
-		string_view briefDownText,
-		int64_t posessionTeamId,
-		bool isRedZone
-	);
+	Event(int64_t _id, string _str_scheduledDatetime, string _detail, string _shortDetail,
+	      string _name,
+	      string _shortName, double _clock, string _displayClock, int64_t _period, bool _completed,
+	      string _state, string _locationName, int64_t _homeTeamId, int64_t _awayTeamId,
+	      int64_t _homeTeamScore,
+	      int64_t _awayTeamScore, string _briefDownText, int64_t _posessionTeamId, int64_t _yardLine, bool _isRedZone);
 	string printString();
-	string convertTimeToEST(const string* UTCInput);
+	string convertTimeToEST(const string* UTCInput) const;
 	string convertMonthNumToString(int monthNum);
+	char determineHomeOrAwayHasPossession() const;
+	string getPossessionString() const;
+
 private:
 	int64_t id{};
-	string_view str_scheduledDatetime;
-	string_view detail;
-	string_view shortDetail;
-	string_view name;
-	string_view shortName;
+	string str_scheduledDatetime;
+	string detail;
+	string shortDetail;
+	string name;
+	string shortName;
 	double clock{};
-	string_view displayClock;
+	string displayClock;
 	int64_t period{};
 	bool completed{};
-	string_view state;
-	string_view locationName;
+	string state;
+	string locationName;
 	int64_t homeTeamScore{};
 	int64_t awayTeamScore{};
-	string_view briefDownText;
+	string briefDownText;
 	int64_t posessionTeamId{};
+	int64_t yardLine;
 	bool isRedZone{};
 };

@@ -14,7 +14,10 @@
 
 #include <stdio.h>
 
+
 using namespace Serial;
+
+
 
 
 #if defined (_WIN32) || defined(_WIN64)
@@ -35,18 +38,21 @@ using namespace Serial;
  *              <0 : an error occured
  */
 serialib serial;
+FILE* fp;
 int start()
 {
+
     // Serial object
 
     // Connection to serial port
     std::cout << SERIAL_PORT << std::endl;
     
 
-    char errorOpening = serial.openDevice(SERIAL_PORT, 57600);
+    char errorOpening = serial.openDevice(SERIAL_PORT, 115200);
     std::cout << std::to_string(errorOpening) << std::endl;
     if (errorOpening != 1) return errorOpening;
         // If connection fails, return the error code otherwise, display a success message
+
 
     const char onSignal[] = {0x01};
     const char offSignal[] = { 0x02 };
@@ -101,28 +107,46 @@ int sendMessage(SerialMessage data) {
 
     }
     break;
-
     case TransmissionType::SingleEvent:
     {
+        // Tells the ESP32 what message is coming
         std::reverse_copy(static_cast<const char*>(static_cast<const void*>(&data.type)),
             static_cast<const char*>(static_cast<const void*>(&data.type)) + sizeof data.type,
             std::begin(messageArray) + curr_index);
         curr_index += sizeof data.type;
-        //std::reverse_copy(static_cast<const char*>(static_cast<const void*>(&data.num_instances)),
-        //    static_cast<const char*>(static_cast<const void*>(&data.num_instances)) + sizeof data.num_instances,
-        //    std::begin(messageArray) + curr_index);
-        //curr_index += sizeof data.num_instances;
 
-        //for (std::string event_string : data.instances)
-        //{
-        //const std::string event_string = data.instances[0];
-
+        // Message length used to determine message end
         const short messageLength = data.string_data.length();
         std::reverse_copy(static_cast<const char*>(static_cast<const void*>(&messageLength)),
             static_cast<const char*>(static_cast<const void*>(&messageLength)) + sizeof messageLength,
             std::begin(messageArray) + curr_index);
         curr_index += sizeof messageLength;
 
+        // Actual String of data
+        std::copy(data.string_data.c_str(), data.string_data.c_str() + data.string_data.size(),
+            std::begin(messageArray) + curr_index);
+        curr_index += data.string_data.size();
+        //}
+
+
+    }
+    break;
+    case TransmissionType::SingleEventWithBitmap:
+    {
+            // Tells the ESP32 what message is coming
+        std::reverse_copy(static_cast<const char*>(static_cast<const void*>(&data.type)),
+            static_cast<const char*>(static_cast<const void*>(&data.type)) + sizeof data.type,
+            std::begin(messageArray) + curr_index);
+        curr_index += sizeof data.type;
+
+			// Message length used to determine message end
+        const short messageLength = data.string_data.length();
+        std::reverse_copy(static_cast<const char*>(static_cast<const void*>(&messageLength)),
+            static_cast<const char*>(static_cast<const void*>(&messageLength)) + sizeof messageLength,
+            std::begin(messageArray) + curr_index);
+        curr_index += sizeof messageLength;
+
+            // Actual String of data
         std::copy(data.string_data.c_str(), data.string_data.c_str() + data.string_data.size(),
             std::begin(messageArray) + curr_index);
         curr_index += data.string_data.size();
@@ -174,19 +198,20 @@ int sendMessage(SerialMessage data) {
     // Final 
     //addChecksum(messageArray, curr_index);
     //char finalArray[curr_index+1]
-    char readBuffer[250] = { 0x11,0x11,0x4f,0x4b };
+    char readBuffer[8] = {};
 
     // Write the message
-    serial.writeBytes(messageArray, curr_index);
+	serial.writeBytes(messageArray, curr_index);
     // Check for an ACK responses
-    //serial.readBytes(readBuffer,4,1000);
+    serial.readBytes(readBuffer,2,1000);
     //if ((readBuffer[0] << 8 | readBuffer[1]) == 0x1111) {
-    //    if ((readBuffer[2] << 8 | readBuffer[3]) == ACK_Signals::OK) {
-    //        std::cout << "test";
-    //    }
+        if ((readBuffer[0] << 8 | readBuffer[1]) == OK) {
+            //std::cout << "Received ACK" << std::endl;
+        }
     //}
-    //std::cout << "done";
-    //
+    else
+		std::cout << "Failed to receive ACK" << std::endl;
+    // TODO - process different ACK messages
     return 0;
 }
 

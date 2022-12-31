@@ -78,3 +78,8 @@ std::vector<char>* Team::getBitmap() const
 {
 	return raw_bitmap;
 }
+
+string Team::getAbbrName()
+{
+	return abbreviation;
+}

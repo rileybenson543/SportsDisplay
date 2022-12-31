@@ -209,6 +209,7 @@ namespace Serial {
 		ACK = 0x1111,
 		NEWS = 0x10,
 		SingleEvent = 0x11,
+		SingleEventWithBitmap = 0x12,
 		Bitmap = 0x20,
 		ScoreOnly = 0x21,
 		NascarPositions = 0x2001
@@ -230,9 +231,20 @@ namespace Serial {
 		short state;
 		std::string string_data;
 		std::vector<std::string> instances;
+		bool sendingBitmap = false;
 		std::vector<char>* bmp;
 		int homeTeamId;
 		int awayTeamId;
+		bool operator==(const SerialMessage& other) const {
+			return type == other.type && 
+				num_instances == other.num_instances &&
+				state == other.state &&
+				string_data == other.string_data &&
+				instances == other.instances &&
+				bmp == other.bmp &&
+				homeTeamId == other.homeTeamId &&
+				awayTeamId == other.awayTeamId;
+		}
 	};
 }
 int start();

@@ -28,6 +28,7 @@ public:
 		string str_homeRecord, string str_awayRecord);
 	void readBitmapToMemory(std::filesystem::path filePath);
 	[[nodiscard]] std::vector<char>* getBitmap() const;
+	string getAbbrName();
 	string getId();
 	//std::vector<char>* getBitmap();
 
