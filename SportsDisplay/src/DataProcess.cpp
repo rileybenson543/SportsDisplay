@@ -135,9 +135,9 @@ void processDataSIMD(string* rawJsonData, RequestType type) {
 			    currEvent["competitions"].at(0)["competitors"].at(1)["id"].get_int64_in_string().get(awayTeamId);
 			    currEvent["competitions"].at(0)["competitors"].at(0)["score"].get_int64_in_string().get(homeTeamScore);
 			    currEvent["competitions"].at(0)["competitors"].at(1)["score"].get_int64_in_string().get(awayTeamScore);
-			    currEvent["competitions"].at(0)["situation"]["downDistanceText"].get_string().get(briefDownText);
+			    currEvent["competitions"].at(0)["situation"]["shortDownDistanceText"].get_string().get(briefDownText);
 			    currEvent["competitions"].at(0)["situation"]["possession"].get_int64_in_string().get(posessionTeamId);
-			    currEvent["competitions"].at(0)["situation"]["lastPlay"]["end"]["yardLine"].get_int64_in_string().get(yardLine);
+			    currEvent["competitions"].at(0)["situation"]["yardLine"].get_int64().get(yardLine);
 			    currEvent["competitions"].at(0)["situation"]["isRedZone"].get_bool().get(isRedZone);
 
 			    auto* e = new Event(
@@ -216,9 +216,9 @@ void processDataSIMD(string* rawJsonData, RequestType type) {
 	        doc["competitions"].at(0)["competitors"].at(1)["id"].get_int64_in_string().get(awayTeamId);
 	        doc["competitions"].at(0)["competitors"].at(0)["score"].get_int64_in_string().get(homeTeamScore);
 	        doc["competitions"].at(0)["competitors"].at(1)["score"].get_int64_in_string().get(awayTeamScore);
-	        doc["competitions"].at(0)["situation"]["downDistanceText"].get_string().get(briefDownText);
+	        doc["competitions"].at(0)["situation"]["shortDownDistanceText"].get_string().get(briefDownText);
 	        doc["competitions"].at(0)["situation"]["possession"].get_int64_in_string().get(posessionTeamId);
-	        doc["competitions"].at(0)["situation"]["lastPlay"]["end"]["yardLine"].get_int64_in_string().get(yardLine);
+	        doc["competitions"].at(0)["situation"]["yardLine"].get_int64().get(yardLine);
 	        doc["competitions"].at(0)["situation"]["isRedZone"].get_bool().get(isRedZone);
 
 
@@ -232,6 +232,8 @@ void processDataSIMD(string* rawJsonData, RequestType type) {
 
 	        delete events[id];
 	        events[id] = e;
+
+			//std::cout << displayClock << std::endl;
 
 	    }
         break;

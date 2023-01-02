@@ -6,7 +6,7 @@
 std::future<int> future;
 
 
-Team::Team() {}
+Team::Team() = default;
 
 Team::Team(
 	string  _id, 
@@ -21,7 +21,7 @@ Team::Team(
 {
 	// Download the image and process it
 	fullResLogoFilename = id + ".png";
-	future = std::async(std::launch::async, processImage, this, &logoUrl, &fullResLogoFilename, 30);
+	future = std::async(std::launch::async, processImage, this, &logoUrl, &fullResLogoFilename, 30, alternateColor);
 	//Causes Memory Leak!!!!
 }
 Team::~Team() { delete raw_bitmap; }
@@ -40,18 +40,18 @@ void Team::setRecordFromString(string str_totalRecord,
 	awayRecord = record{ atoi(&str_awayRecord[0]), atoi(&str_awayRecord[2]) };
 }
 
-string Team::getId() {
+string Team::getId() const {
 	return id;
 }
 
-void Team::readBitmapToMemory(std::filesystem::path filePath) {
+void Team::readBitmapToMemory(const std::filesystem::path* filePath) {
 	using namespace std;
 
 	// open file stream in binary
-	ifstream ifd(filePath.string(), ios::binary | ios::ate);
+	ifstream ifd(filePath->string(), ios::binary | ios::ate);
 
 	//get the file size
-	int size = ifd.tellg();
+	const long long size = ifd.tellg();
 
 	// set file pointer to beginning
 	ifd.seekg(0, ios::beg);
@@ -79,7 +79,7 @@ std::vector<char>* Team::getBitmap() const
 	return raw_bitmap;
 }
 
-string Team::getAbbrName()
+string Team::getAbbrName() const
 {
 	return abbreviation;
 }

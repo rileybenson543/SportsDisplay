@@ -1,5 +1,3 @@
-#pragma once
-
 #include "serialib.h"
 #include "Serial.h"
 #include <vector>
@@ -45,13 +43,12 @@ int start()
     // Serial object
 
     // Connection to serial port
-    std::cout << SERIAL_PORT << std::endl;
     
 
     char errorOpening = serial.openDevice(SERIAL_PORT, 115200);
-    std::cout << std::to_string(errorOpening) << std::endl;
     if (errorOpening != 1) return errorOpening;
         // If connection fails, return the error code otherwise, display a success message
+    std::cout << "Successfully connected to: " + string(SERIAL_PORT) << std::endl;
 
 
     const char onSignal[] = {0x01};

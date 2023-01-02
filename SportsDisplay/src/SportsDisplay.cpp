@@ -84,6 +84,7 @@ int main()
 
 					SerialMessage previousMessage;
 
+
 					for (int j = 0; j < 10; j++)
 					{
 						sleep_for(milliseconds(500));
@@ -100,7 +101,6 @@ int main()
 						sendMessage(s);
 						previousMessage = s;
 					}
-
 					//sleep_for(seconds(10));
 				}
 

@@ -47,14 +47,15 @@ string Event::printString() {
 		+ std::to_string(homeTeamId) + "/" + std::to_string(awayTeamId) + "/";
 	if (state == "pre")
 		s = s + convertMonthNumToString(stoi(datetime.substr(0, 2))) // datetime.substr(0,2)
-		 + datetime.substr(2, strlen(datetime.c_str())) + "/";
+		+ datetime.substr(2, strlen(datetime.c_str())) + "/";
 	else if (state == "in")
 		s = s + std::to_string(homeTeamScore) + "/" + std::to_string(awayTeamScore)
-		+ "/" + std::to_string(period)
-		+ "/" + string(displayClock)
+		+ "/" //+ std::to_string(period)
+		+ "/" + string(shortDetail)
 		+ "/" + string(briefDownText)
 		+ "/" + determineHomeOrAwayHasPossession()
-		+ "/" + getPossessionString();
+		+ "/" + getPossessionString() + "/";
+	//+ getPossessionString();
 	else if (state == "post")
 		s = s + std::to_string(homeTeamScore) + "/" + std::to_string(awayTeamScore);
 	return string(s);
@@ -145,5 +146,7 @@ char Event::determineHomeOrAwayHasPossession() const
 
 string Event::getPossessionString() const
 {
+	if (posessionTeamId == -1)
+		return {};
 	return getTeams()->at(posessionTeamId)->getAbbrName() + " " + std::to_string(yardLine);
 }

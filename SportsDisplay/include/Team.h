@@ -26,10 +26,10 @@ public:
 	~Team();
 	void setRecordFromString(string str_totalRecord, 
 		string str_homeRecord, string str_awayRecord);
-	void readBitmapToMemory(std::filesystem::path filePath);
+	void readBitmapToMemory(const std::filesystem::path* filePath);
 	[[nodiscard]] std::vector<char>* getBitmap() const;
-	string getAbbrName();
-	string getId();
+	[[nodiscard]] string getAbbrName() const;
+	[[nodiscard]] string getId() const;
 	//std::vector<char>* getBitmap();
 
 private:
@@ -45,5 +45,5 @@ private:
 	string logoUrl;
 	string fullResLogoFilename;
 	std::future<int> future;
-	std::vector<char>* raw_bitmap;
+	std::vector<char>* raw_bitmap{};
 };
