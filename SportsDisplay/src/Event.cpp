@@ -1,4 +1,5 @@
 #include "Event.h"
+#include "Team.h"
 #include <string>
 #include <chrono>
 #include <cstring>
@@ -28,14 +29,17 @@ Event::Event(
 	string _briefDownText,
 	int64_t _posessionTeamId,
 	int64_t _yardLine,
-	bool _isRedZone) 
+	bool _isRedZone,
+	int64_t _homeTeamTimeouts,
+	int64_t _awayTeamTimeouts) 
 	: id(_id), str_scheduledDatetime(_str_scheduledDatetime), detail(_detail),
 		shortDetail(_shortDetail), name(_name), shortName(_shortName),
 		clock(_clock), displayClock(_displayClock), period(_period),
 		completed(_completed), state(_state), locationName(_locationName),
 		homeTeamId(_homeTeamId), awayTeamId(_awayTeamId), homeTeamScore(_homeTeamScore),
 		awayTeamScore(_awayTeamScore), briefDownText(_briefDownText),
-		posessionTeamId(_posessionTeamId), yardLine(_yardLine), isRedZone(_isRedZone)
+		posessionTeamId(_posessionTeamId), yardLine(_yardLine), isRedZone(_isRedZone),
+		homeTeamTimeouts(_homeTeamTimeouts), awayTeamTimeouts(_awayTeamTimeouts)
 {
 
 }
@@ -43,22 +47,24 @@ string Event::printString() {
 	auto s = string();
 	string datetime_UTC = string(str_scheduledDatetime);
 	string datetime = convertTimeToEST(&datetime_UTC);
-	s = string(state) + "/"
-		+ std::to_string(homeTeamId) + "/" + std::to_string(awayTeamId) + "/";
+	s = string(state) + "/";
 	if (state == "pre")
 		s = s + convertMonthNumToString(stoi(datetime.substr(0, 2))) // datetime.substr(0,2)
-		+ datetime.substr(2, strlen(datetime.c_str())) + "/";
+		+ datetime.substr(2, strlen(datetime.c_str()))
+		+ "/" + teams[homeTeamId]->getRecord()
+		+ "/" + teams[awayTeamId]->getRecord();
 	else if (state == "in")
 		s = s + std::to_string(homeTeamScore) + "/" + std::to_string(awayTeamScore)
 		+ "/" //+ std::to_string(period)
 		+ "/" + string(shortDetail)
 		+ "/" + string(briefDownText)
 		+ "/" + determineHomeOrAwayHasPossession()
-		+ "/" + getPossessionString() + "/";
+		+ "/" + getPossessionString()
+		+ "/" + std::to_string(homeTeamTimeouts) + "/" + std::to_string(awayTeamTimeouts);
 	//+ getPossessionString();
 	else if (state == "post")
 		s = s + std::to_string(homeTeamScore) + "/" + std::to_string(awayTeamScore);
-	return string(s);
+	return s;
 }
 string Event::convertTimeToEST(const string* UTCInput) const
 {
@@ -148,5 +154,12 @@ string Event::getPossessionString() const
 {
 	if (posessionTeamId == -1)
 		return {};
-	return getTeams()->at(posessionTeamId)->getAbbrName() + " " + std::to_string(yardLine);
+	return teams.at(posessionTeamId)->getAbbrName() + " " + std::to_string(yardLine);
+}
+
+bool Event::is_in_progress() const
+{
+	if (state == "in")
+		return true;
+	return false;
 }

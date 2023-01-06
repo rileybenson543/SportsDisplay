@@ -14,12 +14,14 @@ public:
 	      string _shortName, double _clock, string _displayClock, int64_t _period, bool _completed,
 	      string _state, string _locationName, int64_t _homeTeamId, int64_t _awayTeamId,
 	      int64_t _homeTeamScore,
-	      int64_t _awayTeamScore, string _briefDownText, int64_t _posessionTeamId, int64_t _yardLine, bool _isRedZone);
+	      int64_t _awayTeamScore, string _briefDownText, int64_t _posessionTeamId, int64_t _yardLine, bool _isRedZone,
+	      int64_t homeTeamTimeouts, int64_t awayTeamTimeouts);
 	string printString();
 	string convertTimeToEST(const string* UTCInput) const;
 	string convertMonthNumToString(int monthNum);
 	char determineHomeOrAwayHasPossession() const;
 	string getPossessionString() const;
+	bool is_in_progress() const;
 
 private:
 	int64_t id{};
@@ -40,4 +42,6 @@ private:
 	int64_t posessionTeamId{};
 	int64_t yardLine;
 	bool isRedZone{};
+	int64_t homeTeamTimeouts;
+	int64_t awayTeamTimeouts;
 };

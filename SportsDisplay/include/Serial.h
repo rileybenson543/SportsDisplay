@@ -233,10 +233,10 @@ namespace Serial {
 		std::vector<std::string> instances;
 		bool sendingBitmap = false;
 		std::vector<char>* bmp;
-		int homeTeamId;
-		int awayTeamId;
+		int64_t homeTeamId;
+		int64_t awayTeamId;
 		bool operator==(const SerialMessage& other) const {
-			return type == other.type && 
+			return type == other.type &&
 				num_instances == other.num_instances &&
 				state == other.state &&
 				string_data == other.string_data &&

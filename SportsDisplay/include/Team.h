@@ -1,14 +1,9 @@
 #pragma once
 #include <string>
-#include <iostream>
 #include <future>
 #include <filesystem>
 #include <vector>
 
-struct record {
-	int wins;
-	int loss;
-};
 
 using std::string;
 
@@ -24,13 +19,12 @@ public:
 		string logoUrl
 	);
 	~Team();
-	void setRecordFromString(string str_totalRecord, 
-		string str_homeRecord, string str_awayRecord);
+	void setRecords(string str_totalRecord, string str_homeRecord, string str_awayRecord);
 	void readBitmapToMemory(const std::filesystem::path* filePath);
 	[[nodiscard]] std::vector<char>* getBitmap() const;
 	[[nodiscard]] string getAbbrName() const;
+	string getRecord() const;
 	[[nodiscard]] string getId() const;
-	//std::vector<char>* getBitmap();
 
 private:
 	string id;
@@ -39,9 +33,9 @@ private:
 	string abbreviation;
 	string color;
 	string alternateColor;
-	record totalRecord{};
-	record homeRecord{};
-	record awayRecord{};
+	string totalRecord;
+	string homeRecord;
+	string awayRecord;
 	string logoUrl;
 	string fullResLogoFilename;
 	std::future<int> future;

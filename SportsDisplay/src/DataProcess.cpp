@@ -1,4 +1,3 @@
-#include <iostream>
 #include <curl/curl.h>
 #include "DataProcess.h"
 #include "Team.h"
@@ -11,17 +10,21 @@
 #include "NewsItem.h"
 
 
-std::unordered_map<int, Team*> teams;
-std::unordered_map<int, Event*> events;
+//std::unordered_map<int, Team*> teams;
+//std::unordered_map<int, Event*> events;
+
+SportsType mode;
+
+std::vector<int> in_progress_games;
 std::vector<NewsItem> news;
 
 std::vector<std::future<void>> futures;
 
-const string newsURL = string("http://site.api.espn.com/apis/site/v2/sports/football/nfl/news");
-const string scoreURL = string("http://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard");
-const string teamsURL = string("http://site.api.espn.com/apis/site/v2/sports/football/nfl/teams");
-const string specificTeamURL = string("http://site.api.espn.com/apis/site/v2/sports/football/nfl/teams/"); // append team id //before request
 
+string newsURL;
+string scoreURL;
+string teamsURL;
+string specificTeamURL;
 
 using std::string, std::string_view;
 simdjson::ondemand::parser parser;
@@ -91,7 +94,7 @@ void processDataSIMD(string* rawJsonData, RequestType type) {
         case SCORES:
 	    {
 		    //events.clear();
-		    for (auto event : events)
+		    for (std::pair<int64_t, Event*> event : events)
 		    {
 			    delete(event.second);
 		    }
@@ -118,6 +121,8 @@ void processDataSIMD(string* rawJsonData, RequestType type) {
 			    int64_t posessionTeamId = -1;
 			    int64_t yardLine = -1;
 			    bool isRedZone = false;
+				int64_t homeTeamTimeouts = -1;
+				int64_t awayTeamTimeouts = -1;
 
 			    currEvent["id"].get_int64_in_string().get(id);
 			    currEvent["date"].get_string().get(str_scheduledDatetime);
@@ -139,19 +144,22 @@ void processDataSIMD(string* rawJsonData, RequestType type) {
 			    currEvent["competitions"].at(0)["situation"]["possession"].get_int64_in_string().get(posessionTeamId);
 			    currEvent["competitions"].at(0)["situation"]["yardLine"].get_int64().get(yardLine);
 			    currEvent["competitions"].at(0)["situation"]["isRedZone"].get_bool().get(isRedZone);
+				currEvent["competitions"].at(0)["situation"]["homeTimeouts"].get_int64().get(homeTeamTimeouts);
+				currEvent["competitions"].at(0)["situation"]["awayTimeouts"].get_int64().get(awayTeamTimeouts);
+
 
 			    auto* e = new Event(
                     id, string(str_scheduledDatetime), string(detail), string(shortDetail), string(name), string(shortName), clock, string(displayClock),
                     period, completed, string(state), string(locationName),
 				    homeTeamId, awayTeamId, homeTeamScore, awayTeamScore,
-                    string(briefDownText), posessionTeamId, yardLine, isRedZone
+                    string(briefDownText), posessionTeamId, yardLine, isRedZone, homeTeamTimeouts, awayTeamTimeouts
 			    );
 
 			    events[id] = e;
 
 
 			    // team record information is stored in the event
-			    // request so we will gwt that data now
+			    // request so we will get that data now
 			    string_view total;
 			    string_view home;
 			    string_view away;
@@ -164,15 +172,15 @@ void processDataSIMD(string* rawJsonData, RequestType type) {
 
 			    // pass the string to the Team to be processed and stored
 			    // TODO: need to use string_view instead of casting to string
-			    teams[homeTeamId]->setRecordFromString((string)total, (string)home, (string)away);
+			    teams[homeTeamId]->setRecords(string(total), string(home), string(away));
 
-			    currEvent["competitions"].at(0)["competitors"].at(0)["records"].at(0)["summary"].get_string().
-				    get(total);
-			    currEvent["competitions"].at(0)["competitors"].at(0)["records"].at(1)["summary"].get_string().get(home);
-			    currEvent["competitions"].at(0)["competitors"].at(0)["records"].at(2)["summary"].get_string().get(away);
+			    currEvent["competitions"].at(0)["competitors"].at(1)["records"].at(0)["summary"].get_string().
+				    get(total);			  
+			    currEvent["competitions"].at(0)["competitors"].at(1)["records"].at(1)["summary"].get_string().get(home);
+			    currEvent["competitions"].at(0)["competitors"].at(1)["records"].at(2)["summary"].get_string().get(away);
 
 			    // add to the away teams as well
-			    teams[awayTeamId]->setRecordFromString((string)total, (string)home, (string)away);
+			    teams[awayTeamId]->setRecords(string(total), string(home), string(away));
 		    }
 	    }
 		break;
@@ -197,8 +205,10 @@ void processDataSIMD(string* rawJsonData, RequestType type) {
 	        int64_t awayTeamScore = -1;
 	        string_view briefDownText;
 	        int64_t posessionTeamId = -1;
-	        int64_t yardLine = -1;
+			int64_t yardLine = -1;
 	        bool isRedZone = false;
+			int64_t homeTeamTimeouts = -1;
+			int64_t awayTeamTimeouts = -1;
 
 	        doc["id"].get_int64_in_string().get(id);
 	        doc["date"].get_string().get(str_scheduledDatetime);
@@ -220,13 +230,15 @@ void processDataSIMD(string* rawJsonData, RequestType type) {
 	        doc["competitions"].at(0)["situation"]["possession"].get_int64_in_string().get(posessionTeamId);
 	        doc["competitions"].at(0)["situation"]["yardLine"].get_int64().get(yardLine);
 	        doc["competitions"].at(0)["situation"]["isRedZone"].get_bool().get(isRedZone);
+			doc["competitions"].at(0)["situation"]["homeTimeouts"].get_int64().get(homeTeamTimeouts);
+			doc["competitions"].at(0)["situation"]["awayTimeouts"].get_int64().get(awayTeamTimeouts);
 
 
 			auto* e = new Event(
 				id, string(str_scheduledDatetime), string(detail), string(shortDetail), string(name), string(shortName), clock, string(displayClock),
 				period, completed, string(state), string(locationName),
 				homeTeamId, awayTeamId, homeTeamScore, awayTeamScore,
-				string(briefDownText), posessionTeamId, yardLine, isRedZone
+				string(briefDownText), posessionTeamId, yardLine, isRedZone, homeTeamTimeouts, awayTeamTimeouts
 			);
 
 
@@ -319,18 +331,18 @@ void processData(string* unformatted, RequestType type) {
 				    stoi(currEventJson["competitions"][0]["competitors"][1]["score"].asString()),
 				    downDistance, posessionId,
                     currEventJson["competitions"][0]["situation"]["lastPlay"]["end"]["yardLine"].asInt64(),
-                    redZone
+                    redZone, -1, -1
 			    );
 			    // set team records
-			    teams[homeTeamId]->setRecordFromString(
-				    currEventJson["competitions"][0]["competitors"][0]["records"][0]["summary"].asString(),
-				    currEventJson["competitions"][0]["competitors"][0]["records"][1]["summary"].asString(),
-				    currEventJson["competitions"][0]["competitors"][0]["records"][2]["summary"].asString()
+			    teams[homeTeamId]->setRecords(
+				    currEventJson["competitions"][0]["competitors"][0]["records"]["items"][0]["summary"].asString(),
+				    currEventJson["competitions"][0]["competitors"][0]["records"]["items"][1]["summary"].asString(),
+				    currEventJson["competitions"][0]["competitors"][0]["records"]["items"][2]["summary"].asString()
 			    );
-			    teams[awayTeamId]->setRecordFromString(
-				    currEventJson["competitions"][0]["competitors"][1]["records"][0]["summary"].asString(),
-				    currEventJson["competitions"][0]["competitors"][1]["records"][1]["summary"].asString(),
-				    currEventJson["competitions"][0]["competitors"][1]["records"][2]["summary"].asString()
+			    teams[awayTeamId]->setRecords(
+				    currEventJson["competitions"][0]["competitors"][1]["records"]["items"][0]["summary"].asString(),
+				    currEventJson["competitions"][0]["competitors"][1]["records"]["items"][1]["summary"].asString(),
+				    currEventJson["competitions"][0]["competitors"][1]["records"]["items"][2]["summary"].asString()
 			    );
 		    }
 
@@ -368,7 +380,7 @@ void processData(string* unformatted, RequestType type) {
 	    {
 		    int teamID = stoi(jsonData["team"]["id"].asString());
            
-		    teams[teamID]->setRecordFromString(
+		    teams[teamID]->setRecords(
 			    jsonData["team"]["record"]["items"][0]["summary"].asString(),
 			    jsonData["team"]["record"]["items"][1]["summary"].asString(),
 			    jsonData["team"]["record"]["items"][2]["summary"].asString()
@@ -396,7 +408,7 @@ void processData(string* unformatted, RequestType type) {
 
 
 void getRequest(RequestType type, int64_t id) {
-    auto* rawData = new string();
+	string* rawData;
     switch (type)
     {
     case NEWS:
@@ -446,12 +458,47 @@ void getRequest(RequestType type, int64_t id) {
 //    }
 //    return events_strings;
 //}
-
-std::unordered_map<int, Event*>* getEvents()
+std::vector<int>* get_in_progress_games()
+{
+	in_progress_games.clear();
+	for (auto i = events.begin(); i != events.end(); i++)
+	{
+		if (i->second->is_in_progress())
+			in_progress_games.push_back(i->first);
+	}
+	return &in_progress_games;
+}
+inline std::unordered_map<int64_t, Event*>* getEvents()
 {
     return &events;
 }
-std::unordered_map<int, Team*>* getTeams()
+inline std::unordered_map<int64_t, Team*>* getTeams()
 {
     return &teams;
+}
+void setMode(const SportsType type)
+{
+	mode = type;
+	switch (mode)
+	{
+	case NFL:
+		{
+			newsURL = string("http://site.api.espn.com/apis/site/v2/sports/football/nfl/news");
+			scoreURL = string("http://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard");
+			teamsURL = string("http://site.api.espn.com/apis/site/v2/sports/football/nfl/teams");
+			specificTeamURL = string("http://site.api.espn.com/apis/site/v2/sports/football/nfl/teams/");
+		}
+		break;
+	case NHL:
+		{
+			newsURL = string("http://site.api.espn.com/apis/site/v2/sports/hockey/nhl/news");
+			scoreURL = string("http://site.api.espn.com/apis/site/v2/sports/hockey/nhl/scoreboard");
+			teamsURL = string("http://site.api.espn.com/apis/site/v2/sports/hockey/nhl/teams");
+			specificTeamURL = string("http://site.api.espn.com/apis/site/v2/sports/hockey/nhl/teams/");
+		}
+		break;
+	case NASCAR:
+		{}
+		break;
+	}
 }

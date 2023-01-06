@@ -11,7 +11,7 @@ message(STATUS "Building for ${SYSTEM}")
 
 
 # Add source to this project's executable.
-add_executable (SportsDisplay  "include/SportsDisplay.h" "src/DataProcess.cpp" "include/DataProcess.h" "src/SportsDisplay.cpp"  "include/Team.h" "src/Team.cpp" "include/Event.h" "src/Event.cpp" "src/ImageProcessing.cpp" "include/ImageProcessing.h" "src/NewsItem.cpp" "include/NewsItem.h" "src/Serial.cpp" "src/serialib.cpp" "include/Serial.h" "src/Scheduler.cpp" "include/Scheduler.h")
+add_executable (SportsDisplay  "include/SportsDisplay.h" "src/DataProcess.cpp" "include/DataProcess.h" "src/SportsDisplay.cpp"  "include/Team.h" "src/Team.cpp" "include/Event.h" "src/Event.cpp" "src/ImageProcessing.cpp" "include/ImageProcessing.h" "src/NewsItem.cpp" "include/NewsItem.h" "src/Serial.cpp" "src/serialib.cpp" "include/Serial.h" "src/Scheduler.cpp" "include/Scheduler.h" "src/Datetime/datetime.cpp" "src/Datetime/timespan.cpp" "include/Datetime/datetime.h" "include/Datetime/timespan.h")
 
 if(SYSTEM STREQUAL "windows")
 find_package(jsoncpp CONFIG REQUIRED)
@@ -33,10 +33,13 @@ endif()
 if(CMAKE_COMPILER_IS_GNUCXX)
     message(STATUS "GCC detected, adding compile flags")
     #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpermissive")
+    #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpermissive")
 endif(CMAKE_COMPILER_IS_GNUCXX)
 
 add_custom_command(TARGET SportsDisplay PRE_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy_directory
                        ${CMAKE_SOURCE_DIR}/SportsDisplay/python $<TARGET_FILE_DIR:SportsDisplay>)
-# TODO: Add tests and install targets if needed.
+
+install(TARGETS SportsDisplay DESTINATION bin)
+install(FILES python/ConvertImages.py DESTINATION bin)
+# TODO: Add tests

@@ -2,8 +2,7 @@
 #include "DataProcess.h"
 #include "ImageProcessing.h"
 #include <fstream>
-
-std::future<int> future;
+#include <utility>
 
 
 Team::Team() = default;
@@ -26,18 +25,12 @@ Team::Team(
 }
 Team::~Team() { delete raw_bitmap; }
 
-void Team::setRecordFromString(string str_totalRecord, 
+void Team::setRecords(string str_totalRecord, 
 	string str_homeRecord, string str_awayRecord) 
 {
-	// this funciton is wrong
-	// it doesnt account for ties
-
-	//auto f = id.c_str();
-	//strtok(id.data(), "-");
-
-	totalRecord = record{ atoi(&str_totalRecord[0]), atoi(&str_totalRecord[2]) };
-	homeRecord = record{ atoi(&str_homeRecord[0]), atoi(&str_homeRecord[2]) };
-	awayRecord = record{ atoi(&str_awayRecord[0]), atoi(&str_awayRecord[2]) };
+	totalRecord = std::move(str_totalRecord);
+	homeRecord = std::move(str_homeRecord);
+	awayRecord = std::move(str_awayRecord);
 }
 
 string Team::getId() const {
@@ -82,4 +75,9 @@ std::vector<char>* Team::getBitmap() const
 string Team::getAbbrName() const
 {
 	return abbreviation;
+}
+
+string Team::getRecord() const
+{
+	return totalRecord;
 }

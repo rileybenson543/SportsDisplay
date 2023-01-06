@@ -3,9 +3,7 @@
 #include <vector>
 #include <algorithm>
 #include <string>
-#include <unordered_map>
 #include "Team.h"
-#include "Event.h"
 #include "DataProcess.h"
 
 #include <iostream>
@@ -37,6 +35,7 @@ using namespace Serial;
  */
 serialib serial;
 FILE* fp;
+
 int start()
 {
 
@@ -46,28 +45,14 @@ int start()
     
 
     char errorOpening = serial.openDevice(SERIAL_PORT, 115200);
-    if (errorOpening != 1) return errorOpening;
+    if (errorOpening != 1) {
+        std::cerr << "Error Connecting to " + string(SERIAL_PORT) + " with error code " + errorOpening << std::endl;
+    	return errorOpening;
+    }
         // If connection fails, return the error code otherwise, display a success message
-    std::cout << "Successfully connected to: " + string(SERIAL_PORT) << std::endl;
-
-
-    const char onSignal[] = {0x01};
-    const char offSignal[] = { 0x02 };
-
-
-    //while (true) {
-    //
-    //    serial.writeBytes(onSignal, 1);
-    //    Sleep(1000);
-    //    serial.writeBytes(offSignal, 1);
-    //    Sleep(1000);
-    //
-    //}
-
-    // Close the serial device
-    //serial.closeDevice();
-
-    return 0;
+    std::cout << "Successfully connected to " + string(SERIAL_PORT) << std::endl;
+    
+	return 0;
 }
 
 
@@ -203,22 +188,26 @@ int sendMessage(SerialMessage data) {
     serial.readBytes(readBuffer,2,1000);
     //if ((readBuffer[0] << 8 | readBuffer[1]) == 0x1111) {
         if ((readBuffer[0] << 8 | readBuffer[1]) == OK) {
-            //std::cout << "Received ACK" << std::endl;
+            //sleep_for(seconds(2));
+        	//std::cout << "Received ACK" << std::endl;
         }
     //}
-    else
-		std::cout << "Failed to receive ACK" << std::endl;
+        else {
+            std::cerr << "Failed to receive ACK" << std::endl;
+            std::this_thread::sleep_for(std::chrono::seconds(5));
+            return 1;
+        }
     // TODO - process different ACK messages
     return 0;
 }
 
-int addIntToArray(void* _itemToAdd, char* array, int start) {
-    auto itemToAdd = (short)_itemToAdd;
-    std::reverse_copy(static_cast<const char*>(static_cast<const void*>(&itemToAdd)),
-        static_cast<const char*>(static_cast<const void*>(&itemToAdd)) + sizeof itemToAdd,
-        array + start);
-    return sizeof itemToAdd;
-}
+//int addIntToArray(void* _itemToAdd, char* array, int start) {
+//    auto itemToAdd = (short)_itemToAdd;
+//    std::reverse_copy(static_cast<const char*>(static_cast<const void*>(&itemToAdd)),
+//        static_cast<const char*>(static_cast<const void*>(&itemToAdd)) + sizeof itemToAdd,
+//        array + start);
+//    return sizeof itemToAdd;
+//}
 
 int addToArray(const void* _itemToAdd, char* array, int start) {
     std::reverse_copy(static_cast<const char*>(static_cast<const void*>(_itemToAdd)),
