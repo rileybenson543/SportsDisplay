@@ -1,14 +1,22 @@
 #include "Scheduler.h"
 
+#include <iostream>
+
+#include "datetime.h"
+#include "DataProcess.h"
+
 // NFL start - Aug 4
 // NFL end - Feb, 2nd Sunday
 // NASCAR start - Feb 13
 // NASCAR end - November 1st week
+using jed_utils::timespan, jed_utils::datetime;
 
-using namespace jed_utils;
-
+timespan one_week_away = timespan(-7); // 1 week buffer for getting events the
+										// the week before they start
+timespan one_week_ago = timespan(7);
 
 datetime today;
+
 
 void start_main()
 {
@@ -18,17 +26,29 @@ void start_main()
 	}
 }
 
-void determineSportsMode()
+SportsType determineSportsMode()
 {
+	bool nfl = false;
+	bool nascar = false;
+
 	today = datetime();
 
-	const datetime NFL_Start = datetime(today.get_year(), 8, 4);
-	const datetime NASCAR_Start = datetime(today.get_year(), 2, 13);
+	SportsDates nfl_dates = get_start_end_date(SportsType::NFL,&today);
+	SportsDates nascar_dates = get_start_end_date(SportsType::NASCAR, &today);
 
+	if ((today - nfl_dates.start) >= one_week_away 
+		&& (today - nfl_dates.end) <= one_week_ago)
+		nfl = true;
 
+	if ((today - nascar_dates.start) >= one_week_away
+		&& (today - nascar_dates.end) <= one_week_ago)
+		nascar = true;
 
-
+	if (nfl && nascar) return SportsType::MIXED;
+	if (nfl) return SportsType::NFL;
+	if (nascar) return SportsType::NASCAR;
 }
+
 
 
 //bool every_n_seconds(int n)

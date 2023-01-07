@@ -59,7 +59,7 @@ void Team::readBitmapToMemory(const std::filesystem::path* filePath) {
 	ifd.read(buffer->data(), buffer->size());
 
 	// checks to validate bitmap is
-	// in standard Windows format
+	// in standard windows format
 	if (buffer->data()[0] == (char)0x42 && buffer->data()[1] == (char)0x4d) {
 		// remove file header
 		buffer->erase(buffer->begin(), buffer->begin() + 54);

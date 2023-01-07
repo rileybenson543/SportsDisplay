@@ -8,7 +8,7 @@
 
 #include <iostream>
 
-#include <stdio.h>
+#include <cstdio>
 
 
 using namespace Serial;

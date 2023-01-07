@@ -1,16 +1,21 @@
 #pragma once
 
-#include "Datetime/datetime.h"
-#include "Datetime/timespan.h"
+#include "datetime.h"
+#include "DataProcess.h"
 
+using jed_utils::datetime;
 
-enum Modes
+struct SportsDates
 {
-	nfl_only,
-	nascar_only,
-	mixed
-
+	datetime start;
+	datetime end;
+};
+enum class SportsType
+{
+	NFL,
+	NHL,
+	NASCAR,
+	MIXED
 };
 
-void check_for_update();
-void start_main();
+SportsType determineSportsMode();

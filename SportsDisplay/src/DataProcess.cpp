@@ -1,5 +1,4 @@
 #include <curl/curl.h>
-#include "DataProcess.h"
 #include "Team.h"
 #include "Event.h"
 #include <json/json.h>
@@ -8,12 +7,16 @@
 #include <future>
 #include "simdjson.h"
 #include "NewsItem.h"
+#include "datetime.h"
+#include "Scheduler.h"
+#include "DataProcess.h"
+
+#include <iostream>
 
 
 //std::unordered_map<int, Team*> teams;
 //std::unordered_map<int, Event*> events;
 
-SportsType mode;
 
 std::vector<int> in_progress_games;
 std::vector<NewsItem> news;
@@ -276,6 +279,10 @@ void processDataSIMD(string* rawJsonData, RequestType type) {
 
     case TEAMS_ON_BYE:
 	{}
+	break;
+	case DATES_ESPN:
+	{
+	}
     break;
 
     }
@@ -284,12 +291,13 @@ void processDataSIMD(string* rawJsonData, RequestType type) {
 void processData(string* unformatted, RequestType type) {
     Json::Value jsonData;
     Json::Reader jsonReader;
-    auto* headlineString = new string(); // MEMORY LEAK!!!!!
+	string* headlineString;
     if (!jsonReader.parse(*unformatted, jsonData))
 	    return;
     switch (type)
     {
     case NEWS:
+		headlineString = new string();
 	    for (unsigned int i = 0; i < jsonData["articles"].size(); i++) {
 		    headlineString->append(jsonData["articles"][i]["headline"].asString()+"\n");
 	    }
@@ -476,12 +484,11 @@ inline std::unordered_map<int64_t, Team*>* getTeams()
 {
     return &teams;
 }
-void setMode(const SportsType type)
+void set_sports_mode(SportsType type)
 {
-	mode = type;
-	switch (mode)
+	switch (type)
 	{
-	case NFL:
+	case SportsType::NFL:
 		{
 			newsURL = string("http://site.api.espn.com/apis/site/v2/sports/football/nfl/news");
 			scoreURL = string("http://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard");
@@ -489,7 +496,7 @@ void setMode(const SportsType type)
 			specificTeamURL = string("http://site.api.espn.com/apis/site/v2/sports/football/nfl/teams/");
 		}
 		break;
-	case NHL:
+	case SportsType::NHL:
 		{
 			newsURL = string("http://site.api.espn.com/apis/site/v2/sports/hockey/nhl/news");
 			scoreURL = string("http://site.api.espn.com/apis/site/v2/sports/hockey/nhl/scoreboard");
@@ -497,8 +504,63 @@ void setMode(const SportsType type)
 			specificTeamURL = string("http://site.api.espn.com/apis/site/v2/sports/hockey/nhl/teams/");
 		}
 		break;
-	case NASCAR:
+	case SportsType::NASCAR:
 		{}
 		break;
 	}
+}
+
+SportsDates get_start_end_date(SportsType st, const jed_utils::datetime* today) {
+	static string NFL_url = "http://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard";
+	string NASCAR_url = "https://cf.nascar.com/cacher/" + std::to_string(today->get_year()) + "/race_list_basic.json";
+	SportsDates s;
+	switch (st) {
+	case SportsType::NFL:
+	{
+		string* rawData = getRequestCurl(&NFL_url);
+		using jed_utils::datetime;
+		using namespace simdjson;
+		auto const ps = padded_string(*rawData);
+		auto doc = parser.iterate(ps);
+		string_view start;
+		string_view end;
+		doc["leagues"].at(0)["season"]["startDate"].get_string().get(start);
+		doc["leagues"].at(0)["season"]["endDate"].get_string().get(end);
+		s.start = datetime::parse(string("yyyy-MM-ddTHH:mmZ"), string(start));
+		s.end = datetime::parse(string("yyyy-MM-ddTHH:mmZ"), string(end));
+		delete rawData;
+		break;
+	}
+	case SportsType::NASCAR:
+	{
+		string* rawData = getRequestCurl(&NASCAR_url);
+		using jed_utils::datetime;
+		using namespace simdjson;
+		auto const ps = padded_string(*rawData);
+		auto doc = parser.iterate(ps);
+		datetime start_date = datetime(2200, 1, 1);
+		datetime end_date = datetime(2000, 1, 1);
+		string_view start;
+		string_view end;
+		string series_vals[] = { "series_1", "series_2", "series_3" };
+		for (string series : series_vals) {
+			auto series_data = doc[series];
+			for (auto event : series_data) {
+				string_view date;
+				event["date_scheduled"].get_string().get(date);
+				datetime d = datetime::parse(string("yyyy-MM-ddTHH:mm:ss"), string(date));
+				if (d < start_date) 
+					start_date = d;
+				if (d > end_date) 
+					end_date = d;
+			}
+		}
+		s.start = start_date;
+		s.end = end_date;
+		delete rawData;
+		break;
+	}
+
+	}
+	return s;
 }

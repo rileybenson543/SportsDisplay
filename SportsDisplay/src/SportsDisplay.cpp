@@ -7,26 +7,22 @@
 #include "Serial.h"
 #include "NewsItem.h"
 #include <chrono>
-#include <ctime>
-#include <ranges>
+#include "Scheduler.h"
 
 
-//std::unordered_map<int, Team*> teams;
-//std::unordered_map<int, Event*> events;
 //std::vector<NewsItem> news;
 
 
 using namespace std::this_thread; // sleep_for, sleep_until
 using namespace std::chrono; // nanoseconds, system_clock, seconds
 using namespace Serial;
-//
-//std::unordered_map<int, Event*> events;
-//std::unordered_map<int, Team*> teams;
 
 
 int main()
 {
-	setMode(SportsType::NFL);
+	auto mode = determineSportsMode();
+	set_sports_mode(mode);
+
 
 	getRequest(RequestType::TEAMS);
 	std::cout << "Successfully downloaded and parsed team data" << "\n";
@@ -36,9 +32,6 @@ int main()
 	std::chrono::duration<float> duration = end - start_t;
 	std::cout << duration.count() << std::endl;
 	std::cout << "Received updated scores" << std::endl;
-
-	//std::unordered_map<int, Event*> events = *getEvents();
-	//std::unordered_map<int, Team*> teams = *getTeams();
 	
 	start();
 
